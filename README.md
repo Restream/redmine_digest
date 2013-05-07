@@ -1,0 +1,1 @@
+# Redmine Digest plugin

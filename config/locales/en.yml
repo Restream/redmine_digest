@@ -1,0 +1,19 @@
+en:
+  label_digest_rule: "Rule of choosing issue updates for digest"
+  label_digest_rules_plural: "Digest rules"
+  label_digest_rule_new: "New digest rule"
+  new_digest_rule: "New digest rule"
+
+  field_project_selector: "Projects: "
+
+  project_selector:
+    all: "For any issue update on all my projects"
+    selected: "For any issue update on the selected projects only"
+    not_selected: "For any issue update except the selected projects"
+    member: "For any issue update on all projects where I'm member"
+    author: "For any issue update on all my projects"
+
+  recurrent_values:
+    daily: "daily"
+    weekly: "weekly"
+    monthly: "monthly"

@@ -1,0 +1,21 @@
+<%= error_messages_for 'digest_rule' %>
+
+<div class="box">
+  <p>
+    <em><%= l(:label_digest_rule) %></em>
+  </p>
+  t.boolean :active
+  t.integer :recurrent
+  t.string :project_selector
+  t.text :projects
+  t.text :events
+
+  <p>
+    <%= f.check_box :active %><br />
+  </p>
+
+  <p>
+    <%= f.select :project_selector, project_selector_options %>
+  </p>
+
+</div>

@@ -1,0 +1,47 @@
+<%= stylesheet_link_tag 'redmine_digest', :plugin => 'redmine_digest' %>
+<fieldset class="box digest-rules">
+  <legend><%=l( :label_digest_rules_plural )%></legend>
+  <div class="contextual">
+    <%= link_to l( :new_digest_rule ), new_digest_rule_path, :class => 'icon icon-add' %>
+  </div>
+
+  <% if @user.digest_rules.any? %>
+    <table class="list">
+      <thead>
+      <tr>
+        <th><%= l( :field_active ) %></th>
+        <th><%= l( :field_recurrent ) %></th>
+        <th><%= l( :field_project_selector ) %></th>
+        <th><%= l( :button_sort ) %></th>
+        <th width="10%"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @user.digest_rules.each do |digest_rule| %>
+        <tr>
+          <td align="center"><%= digest_rule.active %></td>
+          <td align="center"><%= digest_rule.recurrent %></td>
+          <td align="center"><%= digest_rule.project_selector %></td>
+          <td align="center">
+            <%= reorder_links('digest_rule', {
+                :controller => 'digest_rules',
+                :action => 'update',
+                :id => digest_rule
+            }, :put) %>
+          </td>
+          <td class="buttons">
+            <%= link_to(l(:button_edit), edit_digest_rule_path(digest_rule), :class => 'icon icon-edit') %>
+
+            <%= link_to(l(:button_delete), digest_rule_path(digest_rule),
+                        :method  => :delete,
+                        :confirm => l( :text_are_you_sure ),
+                        :class   => 'icon icon-del' ) %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+  <% end %>
+</fieldset>

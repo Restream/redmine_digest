@@ -1,0 +1,6 @@
+<h2><%= l( :label_digest_rule_new ) %></h2>
+<%= labelled_form_for(@digest_rule, :url => digest_rules_path) do |f| %>
+  <%= render :partial => 'form', :locals => { :f => f } %>
+  <%= submit_tag l(:button_save) %>
+  <%= link_to l(:button_cancel), digest_rules_path %>
+<% end %>

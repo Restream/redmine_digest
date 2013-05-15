@@ -1,0 +1,6 @@
+<%= stylesheet_link_tag 'select2', :plugin => 'redmine_digest' %>
+<%= javascript_include_tag 'select2/select2', :plugin => 'redmine_digest' %>
+<%=
+    locale_url = find_select2_js_locale(current_language)
+    javascript_include_tag locale_url, :plugin => 'redmine_digest' if locale_url.present?
+%>

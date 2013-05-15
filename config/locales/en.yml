@@ -7,11 +7,11 @@ en:
   field_project_selector: "Projects: "
 
   project_selector:
-    all: "For any issue update on all my projects"
+    all: "For any issue update on all projects"
     selected: "For any issue update on the selected projects only"
     not_selected: "For any issue update except the selected projects"
     member: "For any issue update on all projects where I'm member"
-    author: "For any issue update on all my projects"
+    author: "For any issue update on all my projects (where I'm owner)"
 
   recurrent_values:
     daily: "daily"

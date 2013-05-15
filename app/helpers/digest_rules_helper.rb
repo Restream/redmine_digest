@@ -5,19 +5,24 @@ module DigestRulesHelper
     end
   end
 
-  def projects_options
+  def projects_select2_options
     root_projects = Project.visible.roots.order(:name)
-    projects_tree(root_projects).map do |project|
-      prefix = ' << ' * project.ancestors.count
-      [prefix + project.name, project.id]
-    end
+    projects_tree(root_projects)
   end
 
   def projects_tree(projects)
     result = []
     projects.each do |project|
-      result << project
-      result += projects_tree(project.children) if project.children.any?
+      result << {
+          :text => project.name,
+          :id => project.id
+      }
+      if project.children.any?
+        result << {
+            :text => project.name,
+            :children => projects_tree(project.children)
+        }
+      end
     end
     result
   end

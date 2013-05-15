@@ -4,3 +4,4 @@
     locale_url = find_select2_js_locale(current_language)
     javascript_include_tag locale_url, :plugin => 'redmine_digest' if locale_url.present?
 %>
+<%= javascript_include_tag 'redmine_digest', :plugin => 'redmine_digest' %>

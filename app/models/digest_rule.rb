@@ -11,13 +11,14 @@ class DigestRule < ActiveRecord::Base
   MONTHLY = 'monthly'
   RECURRENT_VALUES = [DAILY, WEEKLY, MONTHLY]
 
-
   belongs_to :user
 
   acts_as_list :scope => :user
 
   serialize :projects, Array
-  serialize :events, Array
+  serialize :events, Hash
+
+  select2_ids :projects
 
   validates :project_selector, :inclusion => { :in => PROJECT_SELECTOR_VALUES }
   validates :recurrent, :inclusion => { :in => RECURRENT_VALUES }

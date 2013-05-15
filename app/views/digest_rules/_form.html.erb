@@ -1,6 +1,6 @@
 <%= error_messages_for 'digest_rule' %>
 
-<div class="box">
+<div class="box digest-rule">
   <p>
     <em><%= l(:label_digest_rule) %></em>
   </p>
@@ -18,8 +18,12 @@
     <%= f.select :project_selector, project_selector_options %>
   </p>
 
-  <p>
-    <%= f.select :projects, projects_options  %>
+  <p id="projects-list">
+    <%= f.hidden_field :projects,
+                       :data => { :options => projects_select2_options } %>
   </p>
 
+  <p>
+    <%= f.check_box :active %><br />
+  </p>
 </div>

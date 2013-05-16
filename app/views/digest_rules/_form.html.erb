@@ -1,29 +1,42 @@
 <%= error_messages_for 'digest_rule' %>
 
-<div class="box digest-rule">
-  <p>
-    <em><%= l(:label_digest_rule) %></em>
-  </p>
-  t.boolean :active
-  t.integer :recurrent
-  t.string :project_selector
-  t.text :projects
-  t.text :events
+<div class="box tabular digest-rule">
+  <h3><%= l(:label_digest_rule) %></h3>
 
   <p>
-    <%= f.check_box :active %><br />
+    <%= f.check_box :active %>
   </p>
 
   <p>
-    <%= f.select :project_selector, project_selector_options %>
-  </p>
-
-  <p id="projects-list">
-    <%= f.hidden_field :projects,
-                       :data => { :options => projects_select2_options } %>
+    <%= f.text_field :name %>
   </p>
 
   <p>
-    <%= f.check_box :active %><br />
+    <%= f.select :recurrent, recurrent_options_for_select %>
   </p>
+
+  <p>
+    <%= f.select :project_selector, project_selector_options_for_select %>
+  </p>
+
+  <p id="digest-rule-projects">
+    <%= f.hidden_field :raw_project_ids,
+                       :data => { :options => project_ids_options_for_select } %>
+  </p>
+
+  <fieldset>
+    <legend><%=	l(:text_event_types) %></legend>
+    <%= hidden_field_tag 'event_ids[]', [] %>
+
+    <% DigestEvent::TYPES.each do |event_type| %>
+      <p>
+        <%= label_tag event_type_id(event_type), l(event_type, :scope => 'event_types') %>
+        <%=	check_box_tag 'digest_rule[event_type][]',
+                          event_type,
+                          f.object.event_enabled?(event_type),
+                          :id => event_type_id(event_type) %>
+        <br />
+      </p>
+    <% end %>
+  </fieldset>
 </div>

@@ -20,8 +20,8 @@
       <% @user.digest_rules.each do |digest_rule| %>
         <tr>
           <td align="center"><%= digest_rule.active %></td>
-          <td align="center"><%= digest_rule.recurrent %></td>
-          <td align="center"><%= digest_rule.project_selector %></td>
+          <td align="center"><%= l(digest_rule.recurrent, :scope => 'recurrent_types') %></td>
+          <td align="center"><%= l(digest_rule.project_selector, :scope => 'project_selector_short') %></td>
           <td align="center">
             <%= reorder_links('digest_rule', {
                 :controller => 'digest_rules',

@@ -1,11 +1,11 @@
 module DigestRulesHelper
-  def project_selector_options
+  def project_selector_options_for_select
     DigestRule::PROJECT_SELECTOR_VALUES.map do |v|
       [ l(v, :scope => 'project_selector'), v ]
     end
   end
 
-  def projects_select2_options
+  def project_ids_options_for_select
     root_projects = Project.visible.roots.order(:name)
     projects_tree(root_projects)
   end
@@ -27,9 +27,19 @@ module DigestRulesHelper
     result
   end
 
+  def recurrent_options_for_select
+    DigestRule::RECURRENT_TYPES.map do |v|
+      [ l(v, :scope => 'recurrent_types'), v ]
+    end
+  end
+
   def find_select2_js_locale(lang)
     url = "select2/select2_locale_#{lang}"
     file_path = File.join(Rails.root, "/plugin_assets/redmine_digest/#{url}")
     url if File.exists?(file_path)
+  end
+
+  def event_type_id(event_type)
+    "digest_rule_event_type_#{event_type}"
   end
 end

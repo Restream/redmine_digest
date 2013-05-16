@@ -2,18 +2,36 @@ en:
   label_digest_rule: "Rule of choosing issue updates for digest"
   label_digest_rules_plural: "Digest rules"
   label_digest_rule_new: "New digest rule"
+  label_digest_rule_edit: "Edit digest rule"
   new_digest_rule: "New digest rule"
 
-  field_project_selector: "Projects: "
+  field_project_selector: "Projects"
+  field_recurrent: "Recurrent"
+
+  text_event_types: "Select event types which should be included in digest"
 
   project_selector:
     all: "For any issue update on all projects"
     selected: "For any issue update on the selected projects only"
     not_selected: "For any issue update except the selected projects"
     member: "For any issue update on all projects where I'm member"
-    author: "For any issue update on all my projects (where I'm owner)"
 
-  recurrent_values:
+  project_selector_short:
+    all: "All projects"
+    selected: "Selected projects only"
+    not_selected: "Except the selected projects"
+    member: "Projects where I'm member"
+
+  recurrent_types:
     daily: "daily"
     weekly: "weekly"
     monthly: "monthly"
+
+  event_types:
+    status_changed: "Status changed"
+    percent_changed: "Percent changed"
+    assignee_changed: "Assignee changed"
+    version_changed: "Version changed"
+    project_changed: "Project changed"
+    comment_added: "Comment added"
+    issue_created: "Issue created"

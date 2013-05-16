@@ -28,6 +28,12 @@ class DigestRulesController < ApplicationController
     end
   end
 
+  def destroy
+    digest_rule = @user.digest_rules.find(params[:id])
+    digest_rule.destroy
+    redirect_to :controller => 'my', :action => 'account'
+  end
+
   private
 
   def set_user

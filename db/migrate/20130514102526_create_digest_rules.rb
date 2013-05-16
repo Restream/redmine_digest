@@ -5,10 +5,10 @@ class CreateDigestRules < ActiveRecord::Migration
       t.string :name
       t.integer :position
       t.boolean :active
-      t.integer :recurrent
+      t.string :recurrent
       t.string :project_selector
-      t.text :projects
-      t.text :events
+      t.text :project_ids
+      t.text :event_ids
       t.timestamps
     end
   end

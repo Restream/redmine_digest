@@ -5,30 +5,26 @@
     <%= link_to l( :new_digest_rule ), new_digest_rule_path, :class => 'icon icon-add' %>
   </div>
 
+  <%= hidden_field_tag 'digest_rules[active_ids][]', [] %>
+
   <% if @user.digest_rules.any? %>
     <table class="list">
       <thead>
       <tr>
         <th><%= l( :field_active ) %></th>
         <th><%= l( :field_recurrent ) %></th>
-        <th><%= l( :field_project_selector ) %></th>
-        <th><%= l( :button_sort ) %></th>
+        <th><%= l( :field_name ) %></th>
         <th width="10%"></th>
       </tr>
       </thead>
       <tbody>
       <% @user.digest_rules.each do |digest_rule| %>
         <tr>
-          <td align="center"><%= digest_rule.active %></td>
-          <td align="center"><%= l(digest_rule.recurrent, :scope => 'recurrent_types') %></td>
-          <td align="center"><%= l(digest_rule.project_selector, :scope => 'project_selector_short') %></td>
           <td align="center">
-            <%= reorder_links('digest_rule', {
-                :controller => 'digest_rules',
-                :action => 'update',
-                :id => digest_rule
-            }, :put) %>
+            <%= check_box_tag 'digest_rules[active_ids][]', digest_rule.id, digest_rule.active %>
           </td>
+          <td align="center"><%= l(digest_rule.recurrent, :scope => 'recurrent_types') %></td>
+          <td align="center"><%= digest_rule.name %></td>
           <td class="buttons">
             <%= link_to(l(:button_edit), edit_digest_rule_path(digest_rule), :class => 'icon icon-edit') %>
 
@@ -45,3 +41,11 @@
     <p class="nodata"><%= l(:label_no_data) %></p>
   <% end %>
 </fieldset>
+
+<%= javascript_include_tag 'redmine_digest_unsaved', :plugin => 'redmine_digest' %>
+
+<%= javascript_tag do %>
+  $(window).load(function(){
+    warnMyAccountLeavingUnsaved('<%= escape_javascript l(:text_warn_on_leaving_unsaved) %>');
+  });
+<% end %>

@@ -13,6 +13,7 @@ class DigestRulesControllerTest < ActionController::TestCase
     User.current = @user
     @request.session[:user_id] = @user.id
     @digest_rule = @user.digest_rules.create!(
+        :name => 'testrule',
         :active => true,
         :project_selector => DigestRule::ALL,
         :recurrent => DigestRule::DAILY
@@ -27,6 +28,7 @@ class DigestRulesControllerTest < ActionController::TestCase
   def test_post_create
     assert_difference 'DigestRule.count', 1 do
       post :create, :digest_rule => {
+          :name => 'test',
           :active => true,
           :project_selector => DigestRule::ALL,
           :recurrent => DigestRule::DAILY }
@@ -59,49 +61,4 @@ class DigestRulesControllerTest < ActionController::TestCase
     assert_nil digest_rule
   end
 
-  def test_move_higher
-    @user.digest_rules.create!(
-        :active => true,
-        :project_selector => DigestRule::MEMBER,
-        :recurrent => DigestRule::MONTHLY
-    )
-    h1 = DigestRule.by_position[0]
-    h2 = DigestRule.by_position[1]
-
-    assert_equal 1, h1.position
-    assert_equal 2, h2.position
-
-    put :update, :id => h2.id, :digest_rule => { 'move_to' => 'higher' }
-
-    assert_response :redirect
-
-    h1.reload
-    h2.reload
-
-    assert_equal 2, h1.position
-    assert_equal 1, h2.position
-  end
-
-  def test_move_lower
-    @user.digest_rules.create!(
-        :active => true,
-        :project_selector => DigestRule::MEMBER,
-        :recurrent => DigestRule::MONTHLY
-    )
-    h1 = DigestRule.by_position[0]
-    h2 = DigestRule.by_position[1]
-
-    assert_equal 1, h1.position
-    assert_equal 2, h2.position
-
-    put :update, :id => h1.id, :digest_rule => { 'move_to' => 'lower' }
-
-    assert_response :redirect
-
-    h1.reload
-    h2.reload
-
-    assert_equal 2, h1.position
-    assert_equal 1, h2.position
-  end
 end

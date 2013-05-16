@@ -12,18 +12,16 @@ class DigestRule < ActiveRecord::Base
 
   belongs_to :user
 
-  acts_as_list :scope => :user
-
   serialize :project_ids, Array
   serialize :event_ids, Array
 
   attr_accessible :active, :name, :raw_project_ids, :project_selector,
                   :recurrent, :event_ids, :move_to
 
+  validates :name, :presence => true
   validates :project_selector, :inclusion => { :in => PROJECT_SELECTOR_VALUES }
   validates :recurrent, :inclusion => { :in => RECURRENT_TYPES }
 
-  scope :by_position, -> { order(:position) }
   scope :active, -> { where('active = ?', true) }
 
   after_initialize :set_default_values

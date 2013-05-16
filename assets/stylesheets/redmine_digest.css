@@ -1,3 +1,12 @@
 .digest-rules .contextual {
-  margin-top: -10px;
+  margin-top: -12px;
+  padding-bottom: 5px;
+}
+
+.box.tabular.digest-rule input[type=text] {
+  width: 40%;
+}
+
+.tabular p.select2-field label {
+  margin-top: 5px;
 }

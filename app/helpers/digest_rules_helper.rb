@@ -6,7 +6,7 @@ module DigestRulesHelper
   end
 
   def project_ids_options_for_select
-    root_projects = Project.visible.roots.order(:name)
+    root_projects = Project.visible.active.roots.has_module(:issue_tracking).order(:name)
     projects_tree(root_projects)
   end
 
@@ -17,10 +17,11 @@ module DigestRulesHelper
           :text => project.name,
           :id => project.id
       }
-      if project.children.any?
+      children = project.children.active.has_module(:issue_tracking).order(:name)
+      if children.any?
         result << {
             :text => project.name,
-            :children => projects_tree(project.children)
+            :children => projects_tree(children)
         }
       end
     end

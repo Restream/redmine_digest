@@ -1,103 +1,54 @@
 <%
-  user = User.find(224)
+   user = User.find(224)
+   digest_rule = user.digest_rules.create(
+       :name => 'Testing',
+       :recurrent => DigestRule::DAILY,
+       :event_ids => [DigestEvent::STATUS_CHANGED,
+                      DigestEvent::PERCENT_CHANGED,
+                      DigestEvent::ASSIGNEE_CHANGED]
+   )
 
-  cache "digest_for_#{user.login}" do
+   @digest = RedmineDigest::Digest.new(digest_rule, Time.now - 3.days)
+   @sorted_digest_issues = ActiveSupport::OrderedHash.new
+   IssueStatus.sorted.each do |status|
+     iss = @digest.issues.find_all { |i| i.status_id == status.id }.sort_by(&:last_updated_on)
+     @sorted_digest_issues[status] = iss
+   end
 %>
 
-<%
-  period_text = 'Месяц'
+<h1>Ежедневный дайджест с изменениями с <%= @digest.date_from %> по <%= @digest.date_to %></h1>
 
-  # date from for digest
-  date_from = Date.today - 1.month
+<h2>Overview</h2>
 
-  # get all issues changed after date_from
-  issues = Issue.includes(:project, :journals => [:user, :details]).
-      where('journals.created_on >= ?', date_from).
-      where(Issue.visible_condition(user))
-  #where('projects.identifier = ?', 'rubricator')
+<% @sorted_digest_issues.each do |status, digest_issues| %>
+  <% next if digest_issues.empty? %>
 
-  istatus = {}
+  <h3><%=	status %></h3>
 
-  issues.find_each(:batch_size => 300) do |issue|
-
-    # read all journal updates
-    journals = issue.journals #.includes(:user, :details).reorder("#{Journal.table_name}.id ASC").all
-    journals.sort { |a, b| a.id <=> b.id }.each_with_index { |j, i| j.indice = i + 1 }
-    journals.reject!(&:private_notes?) unless user.allowed_to?(:view_private_notes, issue.project)
-
-    prev_status = nil
-
-    status_changes = []
-
-    journals.each do |journal|
-      next if journal.created_on < date_from
-      journal.details.each do |detail|
-        if detail.prop_key == 'status_id'
-
-          # get previous value
-          prev_status = IssueStatus.find(detail.old_value) if prev_status.nil?
-
-          status_changes << [IssueStatus.find(detail.value), journal]
-        end
-      end
-    end
-
-    if status_changes.any?
-      istatus[issue.status] ||= []
-      istatus[issue.status] << [issue, prev_status, status_changes]
-    end
-  end
-%>
-
-<h1>Дайджест за <%= period_text %></h1>
-
-
-<% unless istatus.empty? %>
-  <h2>тикеты, у которых сменился статус</h2>
-
-  <% istatus.each do |status, issues| %>
-    <h3><%= status %></h3>
-    <ul>
-      <% issues.each do |issue, prev_status, status_changes| %>
-        <li>
-          <%= link_to "##{issue.id} [#{issue.project}] #{issue.subject}",
+  <ul>
+    <% digest_issues.each do |issue| %>
+      <li><%= link_to "##{issue.id} [#{issue.project_name}] #{issue.subject}",
                       :controller => 'issues',
                       :action => 'show',
-                      :id => issue %>
-          , <%= prev_status %> ->
-          <%=
-              status_changes.map do |status, journal|
-                link_to status,
-                        {
-                            :controller => 'issues',
-                            :action => 'show',
-                            :id => issue,
-                            :anchor => "note-#{journal.indice}"
-                        },
-                        :title => "#{journal.user} #{I18n.l(journal.created_on, :fromat => :short)}"
-              end.join(' -> ').html_safe
-          %>
-        </li>
-      <% end %>
-    </ul>
-  <% end %>
+                      :id => issue.id %>
+        &nbsp;(<%= @digest.digest_rule.event_ids.map do |event_type|
+
+        if (last_event = issue.events[event_type].last)
+          link_to(
+              last_event.formatted_value,
+              {
+                  :controller => 'issues',
+                  :action => 'show',
+                  :id => issue.id,
+                  :anchor => "note-#{last_event.indice}"
+              },
+              :title => issue.events_summary(event_type))
+          else
+            'WTF?'
+          end
+      end.join(', ').html_safe %>)</li>
+    <% end %>
+  </ul>
 <% end %>
 
-<% end %>
-
-<h2>тикеты, у которых сменился % выполнения</h2>
-
-
-<h2>тикеты, у которых сменилось назначенное лицо</h2>
-
-
-<h2>тикеты, у которых сменилась версия</h2>
-
-
-<h2>тикеты, у которых сменился проект</h2>
-
-
-<h2>тикеты, которые были прокомментированы</h2>
-
-
-<h2>Новые тикеты</h2>
+<h2>Details</h2>

@@ -1,9 +1,32 @@
 <h1>Ежедневный дайджест с изменениями с <%= @digest.date_from %> по <%= @digest.date_from %></h1>
 
-# Overview
-# Changed issues
-#   New Status (group issues by status)
-#     Issue (Issues sorted by last change time)
-#       #000 subject -> (% done, assignee, comments)
+<h2>Overview</h2>
 
-<% @digest.issues.group_by(&:status).each {}
+<% @sorted_digest_issues.each do |status, digest_issues| %>
+  <h3><%=	status %></h3>
+
+  <ul>
+    <% digest_issues.each do |issue| %>
+      <li><%= link_to "##{issue.id} [#{issue.project_name}] #{issue.subject}",
+                    :controller => 'issues',
+                    :action => 'show',
+                    :id => issue.id %>
+        &nbsp;(<%= @digest.digest_rule.event_ids.map do |event_type|
+
+          last_event = issue.events[event_type].last
+
+          link_to(
+              last_event.to_s,
+              {
+                  :controller => 'issues',
+                  :action => 'show',
+                  :id => issue.id,
+                  :anchor => "note-#{last_event.indice}"
+              },
+              :title => issue.event_summary(event_type)).html_safe
+        end.join(', ') %>)</li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h2>Details</h2>

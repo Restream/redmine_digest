@@ -5,7 +5,7 @@ module RedmineDigest
 
     attr_reader :digest_rule, :date_to
 
-    def initialize(digest_rule, date_to = Date.today)
+    def initialize(digest_rule, date_to = Time.now)
       @digest_rule = digest_rule
       @date_to = date_to
     end
@@ -39,12 +39,16 @@ module RedmineDigest
         d_issue = DigestIssue.new(
             :id => issue.id,
             :subject => issue.subject,
-            :status_id => issue.status_id
+            :status_id => issue.status_id,
+            :project_name => issue.project.name,
+            :last_updated_on => date_from
         )
 
         if issue.created_on >= date_from && issue.created_on < date_to
-          d_issue.new? = true
-          d_issue.events << DigestEvent.new(DigestEvent::ISSUE_CREATED, issue)
+          d_issue.is_new = true
+          d_issue.events[DigestEvent::ISSUE_CREATED] << DigestEvent.new(
+              DigestEvent::ISSUE_CREATED, issue)
+          d_issue.last_updated_on = issue.created_on
         end
 
         # read all journal updates, add indice and remove private_notes
@@ -63,10 +67,14 @@ module RedmineDigest
                   !digest_rule.user.allowed_to?(:view_private_notes, issue.project)
 
           digest_rule.event_ids.each do |event_type|
-            event = DigestEvent.detect_change_event(event_type, issue, journal)
-            d_issue.events << event if event
+            if (event = DigestEvent.detect_change_event(event_type, issue, journal))
+              d_issue.last_updated_on = journal.created_on
+              d_issue.events[event_type] << event
+            end
           end
         end
+
+        d_issues << d_issue
       end
 
       d_issues

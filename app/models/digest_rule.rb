@@ -15,6 +15,8 @@ class DigestRule < ActiveRecord::Base
   serialize :project_ids, Array
   serialize :event_ids, Array
 
+  #TODO: rename event_ids to event_types
+
   attr_accessible :active, :name, :raw_project_ids, :project_selector,
                   :recurrent, :event_ids, :move_to
 

@@ -34,6 +34,11 @@ class DigestRulesController < ApplicationController
     redirect_to :controller => 'my', :action => 'account'
   end
 
+  def show
+    digest_rule = @user.digest_rules.find(params[:id])
+    @digest = RedmineDigest::Digest.new(digest_rule)
+  end
+
   private
 
   def set_user

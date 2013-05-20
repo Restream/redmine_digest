@@ -5,9 +5,11 @@ module RedmineDigest
 
     attr_reader :digest_rule, :date_to
 
-    def initialize(digest_rule, date_to = Time.now)
+    delegate :name, :recurrent, :to => :digest_rule, :allow_nil => true
+
+    def initialize(digest_rule, date_to = nil)
       @digest_rule = digest_rule
-      @date_to = date_to
+      @date_to = date_to || Date.today.to_time
     end
 
     def issues
@@ -15,18 +17,11 @@ module RedmineDigest
     end
 
     def date_from
-      @date_from ||= begin
-        case digest_rule.recurrent
-          when DigestRule::DAILY
-            date_to - 1.day
-          when DigestRule::WEEKLY
-            date_to - 1.week
-          when DigestRule::MONTHLY
-            date_to - 1.month
-          else
-            raise DigestError.new "Unknown recurrent type (#{digest_rule.recurrent})"
-        end
-      end
+      @date_from ||= get_date_from
+    end
+
+    def sorted_digest_issues
+      @sorted_digest_issues ||= get_sorted_digest_issues
     end
 
     private
@@ -41,14 +36,16 @@ module RedmineDigest
             :subject => issue.subject,
             :status_id => issue.status_id,
             :project_name => issue.project.name,
-            :last_updated_on => date_from
+            :created_on => issue.created_on,
+            :last_updated_on => issue.created_on
         )
 
         if issue.created_on >= date_from && issue.created_on < date_to
-          d_issue.is_new = true
-          d_issue.events[DigestEvent::ISSUE_CREATED] << DigestEvent.new(
-              DigestEvent::ISSUE_CREATED, issue)
-          d_issue.last_updated_on = issue.created_on
+          event = DigestEvent.new(DigestEvent::ISSUE_CREATED,
+                                  issue.id,
+                                  issue.created_on,
+                                  issue.author.to_s)
+          d_issue.events[DigestEvent::ISSUE_CREATED] << event
         end
 
         # read all journal updates, add indice and remove private_notes
@@ -66,24 +63,54 @@ module RedmineDigest
           next if journal.private_notes? &&
                   !digest_rule.user.allowed_to?(:view_private_notes, issue.project)
 
-          digest_rule.event_ids.each do |event_type|
-            if (event = DigestEvent.detect_change_event(event_type, issue, journal))
+          digest_rule.event_types.each do |event_type|
+            event = DigestEvent.detect_change_event(event_type,
+                                                    issue.id,
+                                                    journal.created_on,
+                                                    journal.user.to_s,
+                                                    journal)
+            if event
               d_issue.last_updated_on = journal.created_on
               d_issue.events[event_type] << event
             end
           end
         end
 
-        d_issues << d_issue
+        d_issues << d_issue if d_issue.any_events?
       end
 
       d_issues
     end
 
+    def get_sorted_digest_issues
+      result = ActiveSupport::OrderedHash.new
+      IssueStatus.sorted.each do |status|
+        iss = issues.find_all { |i| i.status_id == status.id }.sort_by(&:last_updated_on)
+        result[status] = iss
+      end
+      result
+    end
+
+    def get_date_from
+      case digest_rule.recurrent
+        when DigestRule::DAILY
+          date_to - 1.day
+        when DigestRule::WEEKLY
+          date_to - 1.week
+        when DigestRule::MONTHLY
+          date_to - 1.month
+        else
+          raise DigestError.new "Unknown recurrent type (#{digest_rule.recurrent})"
+      end
+    end
+
     def get_issues_scope
+      # TODO: not all journals will read. All records need for compute indice
       Issue.includes(:project, :journals => [:user, :details]).
           where('journals.created_on >= ?', date_from).
           where('journals.created_on < ?', date_to).
+          #where('exists (select * from journals j2 where ' +
+          #      'j2.created_on >= ? and j2.created_on < ?)',date_from, date_to).
           where(Issue.visible_condition(digest_rule.user))
     end
   end

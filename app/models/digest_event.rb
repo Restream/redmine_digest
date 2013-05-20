@@ -1,11 +1,11 @@
 class DigestEvent
-  STATUS_CHANGED    = 'status_changed'
-  PERCENT_CHANGED   = 'percent_changed'
-  ASSIGNEE_CHANGED  = 'assignee_changed'
-  VERSION_CHANGED   = 'version_changed'
-  PROJECT_CHANGED   = 'project_changed'
-  COMMENT_ADDED     = 'comment_added'
-  ISSUE_CREATED     = 'issue_created'
+  STATUS_CHANGED    = :status_changed
+  PERCENT_CHANGED   = :percent_changed
+  ASSIGNEE_CHANGED  = :assignee_changed
+  VERSION_CHANGED   = :version_changed
+  PROJECT_CHANGED   = :project_changed
+  COMMENT_ADDED     = :comment_added
+  ISSUE_CREATED     = :issue_created
 
   TYPES = [STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED,
            PROJECT_CHANGED, COMMENT_ADDED, ISSUE_CREATED]
@@ -18,20 +18,14 @@ class DigestEvent
       PROJECT_CHANGED   => 'project_id'
   }
 
-  attr_reader :event_type, :issue, :journal
+  # length of notes preview
+  NOTES_LENGTH = 30
+
+  attr_reader :event_type, :issue_id, :created_on, :user, :journal
 
   class << self
-    def detect_change_event(event_type, issue, journal)
-      DigestEvent.new(event_type, issue, journal) if case event_type
-        when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
-          detect_journal_detail(journal, PROP_KEYS[event_type])
-        when COMMENT_ADDED
-          journal.notes.present?
-        when ISSUE_CREATED
-          false
-        else
-          raise DigestError.new "Unknown event type (#{event_type})"
-      end
+    def detect_change_event(event_type, issue_id, created_on, user, journal)
+      DigestEvent.new(event_type, issue_id, created_on, user, journal) if has_change(event_type, journal)
     end
 
     def detect_journal_detail(journal, prop_key)
@@ -39,14 +33,29 @@ class DigestEvent
         d.property == 'attr' && d.prop_key == prop_key && d.old_value != d.value
       end
     end
+    
+    private
+    
+    def has_change(event_type, journal)
+      case event_type.to_sym
+        when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
+          true if detect_journal_detail(journal, PROP_KEYS[event_type])
+        when COMMENT_ADDED
+          journal.notes.present?
+        when ISSUE_CREATED
+          false
+        else
+          raise RedmineDigest::DigestError.new "Unknown event type (#{event_type})"
+      end
+    end
   end
 
   def old_value
-    journal_detail && format_value(journal_detail.old_value)
+    journal_detail && journal_detail.old_value
   end
 
   def value
-    journal_detail && format_value(journal_detail.value)
+    event_type == COMMENT_ADDED ? journal.notes : (journal_detail && journal_detail.value)
   end
 
   def formatted_old_value
@@ -61,14 +70,13 @@ class DigestEvent
     user_stamp = "#{I18n.l(created_on, :fromat => :short)} #{user}"
     case event_type
       when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
-        [user_stamp, formatted_value].join(': ')
+        "#{user_stamp}: #{formatted_old_value} -> #{formatted_value}"
       when COMMENT_ADDED
-        # TODO: may be first X characters?
-        [user_stamp, journal.notes].join(': ')
+        "#{user_stamp}: #{value}"
       when ISSUE_CREATED
         user_stamp
       else
-        raise DigestError.new "Unknown event type (#{event_type})"
+        raise RedmineDigest::DigestError.new "Unknown event type (#{event_type})"
     end
   end
 
@@ -76,36 +84,35 @@ class DigestEvent
     journal ? journal.indice : 0
   end
 
-  def created_on
-    journal ? journal.created_on : issue.created_on
-  end
-
-  def user
-    journal ? journal.user : issue.author
+  def initialize(event_type, issue_id, created_on, user, journal = nil)
+    @event_type, @issue_id, @created_on, @user, @journal =
+        event_type, issue_id, created_on, user, journal
   end
 
   private
 
   def format_value(val)
-    return 'NULL' if val.nil?
+    return '-' if val.nil?
     case event_type
       when STATUS_CHANGED
         IssueStatus.find(val)
+      when PERCENT_CHANGED
+        "#{val}%"
       when ASSIGNEE_CHANGED
         User.find(val)
       when VERSION_CHANGED
         Version.find(val)
+      when COMMENT_ADDED
+        # TODO: may be first X characters?
+        val.length > NOTES_LENGTH ?
+            "\"#{val.gsub("\n",'')[0..NOTES_LENGTH]}...\"" : "\"#{val}\""
       when PROJECT_CHANGED
         Project.find(val)
       else
         val
     end
   rescue
-    'Unknown'
-  end
-
-  def initialize(event_type, issue, journal = nil)
-    @event_type, @issue, @journal = event_type, issue, journal
+    '<unknown>'
   end
 
   def journal_detail

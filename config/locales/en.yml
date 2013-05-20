@@ -9,6 +9,12 @@ en:
   field_recurrent: "Recurrent"
 
   text_event_types: "Select event types which should be included in digest"
+  text_digest: "%{recurrent} digest with changes from %{date_from} to %{date_to}"
+  text_digest_comments: "Issues grouped by last status"
+
+  button_digest_preview: "Preview"
+
+  title_digest_preview: "Preview digest"
 
   project_selector:
     all: "For any issue update on all projects"

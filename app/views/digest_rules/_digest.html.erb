@@ -1,0 +1,36 @@
+<h1><%= digest.name %></h1>
+
+<h2><%= l(:text_digest, :recurrent => digest.recurrent.camelcase,
+          :date_from => digest.date_from.to_s(:short),
+          :date_to => digest.date_to.to_s(:short)) %></h2>
+
+<em><%= l(:text_digest_comments) %></em>
+
+<% digest.sorted_digest_issues.each do |status, digest_issues| %>
+  <% next if digest_issues.empty? %>
+
+  <h3><%=	status %></h3>
+
+  <ul>
+    <% digest_issues.each do |d_issue| %>
+      <%= content_tag :li, :class => (d_issue.new_issue? ? 'new-issue' : nil) do %>
+        <%= '+ ' if d_issue.new_issue? %>
+        <%= link_to_digest_issue(d_issue) %>
+        <% if d_issue.changes_event_types.any? %>
+          &nbsp;(<%= (d_issue.changes_event_types).map do |event_type|
+            if (event = d_issue.events[event_type].last)
+              link_to event.formatted_value,
+                      {
+                          :controller => 'issues',
+                          :action => 'show',
+                          :id => event.issue_id,
+                          :anchor => "note-#{event.indice}"
+                      },
+                      :title => d_issue.events_summary(event_type)
+            end
+          end.join(', ').html_safe %>)
+        <% end %>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>

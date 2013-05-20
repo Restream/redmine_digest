@@ -15,8 +15,6 @@ class DigestRule < ActiveRecord::Base
   serialize :project_ids, Array
   serialize :event_ids, Array
 
-  #TODO: rename event_ids to event_types
-
   attr_accessible :active, :name, :raw_project_ids, :project_selector,
                   :recurrent, :event_ids, :move_to
 
@@ -36,8 +34,12 @@ class DigestRule < ActiveRecord::Base
     project_ids.join ','
   end
 
-  def event_enabled?(event)
-    event_ids.include? event
+  def event_type_enabled?(event_type)
+    event_types.include? event_type.to_sym
+  end
+
+  def event_types
+    event_ids.map(&:to_sym)
   end
 
   private

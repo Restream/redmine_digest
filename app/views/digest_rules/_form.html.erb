@@ -33,7 +33,7 @@
         <%= label_tag event_type_id(event_type), l(event_type, :scope => 'event_types') %>
         <%=	check_box_tag 'digest_rule[event_ids][]',
                           event_type,
-                          f.object.event_enabled?(event_type),
+                          f.object.event_type_enabled?(event_type),
                           :id => event_type_id(event_type) %>
         <br />
       </p>

@@ -33,7 +33,7 @@ module RedmineDigest
 
       all_issue_ids.in_groups_of(ISSUE_BATCH_SIZE) do |issue_ids|
 
-        get_issues_scope(issue_ids).each do |issue|
+        get_issues_scope(issue_ids.compact).each do |issue|
 
           d_issue = DigestIssue.new(
               :id => issue.id,
@@ -55,7 +55,6 @@ module RedmineDigest
           # read all journal updates, add indice and remove private_notes
           journals = issue.journals
           journals.sort_by(&:id).each_with_index { |j, i| j.indice = i + 1 }
-          journals.reject!(&:private_notes?) unless digest_rule.user.allowed_to?(:view_private_notes, issue.project)
 
           journals.each do |journal|
             next if journal.created_on < date_from || journal.created_on >= date_to
@@ -125,7 +124,7 @@ module RedmineDigest
     end
 
     def get_issues_scope(issue_ids)
-      Issue.includes(:project, :journals => [:user, :details]).
+      Issue.includes(:project, :author, :journals => [:user, :details]).
           where('issues.id in (?)', issue_ids).
           where(Issue.visible_condition(digest_rule.user))
     end

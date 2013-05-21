@@ -2,7 +2,7 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class DigestRulesControllerTest < ActionController::TestCase
   fixtures :users, :user_preferences, :roles, :projects, :members, :member_roles,
-           :issues, :issue_statuses, :trackers
+           :issues, :issue_statuses, :trackers, :journals, :journal_details
 
 
   def setup
@@ -16,7 +16,7 @@ class DigestRulesControllerTest < ActionController::TestCase
         :name => 'testrule',
         :active => true,
         :project_selector => DigestRule::ALL,
-        :recurrent => DigestRule::DAILY
+        :recurrent => DigestRule::WEEKLY
     )
   end
 
@@ -59,6 +59,11 @@ class DigestRulesControllerTest < ActionController::TestCase
     assert_redirected_to '/my/account'
     digest_rule = DigestRule.find_by_id(@digest_rule.id)
     assert_nil digest_rule
+  end
+
+  def test_show_preview
+    get :show, :id => @digest_rule.id
+    assert_response :success
   end
 
 end

@@ -3,10 +3,12 @@ en:
   label_digest_rules_plural: "Digest rules"
   label_digest_rule_new: "New digest rule"
   label_digest_rule_edit: "Edit digest rule"
+
   new_digest_rule: "New digest rule"
 
   field_project_selector: "Projects"
   field_recurrent: "Recurrent"
+  field_digest_enabled: "Is digest enabled?"
 
   text_event_types: "Select event types which should be included in digest"
   text_digest: "%{recurrent} digest with changes from %{date_from} to %{date_to}"

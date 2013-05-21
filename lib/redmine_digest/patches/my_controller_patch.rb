@@ -10,10 +10,12 @@ module RedmineDigest
 
       def toggle_digest_rules
         digest_rules = params.delete :digest_rules
-        active_ids = digest_rules[:active_ids]
-        User.current.digest_rules.each do |digest_rule|
-          digest_rule.active = active_ids.include? digest_rule.id.to_s
-          digest_rule.save
+        if digest_rules
+          active_ids = digest_rules[:active_ids]
+          User.current.digest_rules.each do |digest_rule|
+            digest_rule.active = active_ids.include? digest_rule.id.to_s
+            digest_rule.save
+          end
         end
         true
       end

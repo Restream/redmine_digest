@@ -28,6 +28,8 @@ module RedmineDigest
 
     def fetch_issues
       all_issue_ids = get_changed_issue_ids
+      all_issue_ids += get_created_issue_ids
+      all_issue_ids.uniq!
 
       d_issues = []
 
@@ -110,23 +112,40 @@ module RedmineDigest
     end
 
     def get_changed_issue_ids
-      ids = Journal.where(
-          'journals.created_on >= ? and journals.created_on < ?',
-          date_from,
-          date_to
-      ).uniq.pluck(:journalized_id)
-      ids += Issue.where(
-          'issues.created_on >= ? and issues.created_on < ?',
-          date_from,
-          date_to
-      ).uniq.pluck(:id)
-      ids.uniq
+      Journal.joins(:issue).where('issues.project_id in (?)', project_ids).
+          where('journals.created_on >= ? and journals.created_on < ?', date_from, date_to).
+          uniq.pluck(:journalized_id)
+    end
+
+    def get_created_issue_ids
+      Issue.where('issues.project_id in (?)', project_ids).
+          where('issues.created_on >= ? and issues.created_on < ?', date_from, date_to).
+          uniq.pluck(:id)
     end
 
     def get_issues_scope(issue_ids)
-      Issue.includes(:project, :author, :journals => [:user, :details]).
+      Issue.includes(:author, :project, :journals => [:user, :details]).
           where('issues.id in (?)', issue_ids).
           where(Issue.visible_condition(digest_rule.user))
+    end
+
+    def project_ids
+      @project_ids ||= Project.includes(:members).where(get_projects_scope).pluck(:id)
+    end
+
+    def get_projects_scope
+      case digest_rule.project_selector
+        when DigestRule::ALL
+          nil
+        when DigestRule::SELECTED
+          ['projects.id in (?)', digest_rule.project_ids]
+        when DigestRule::NOT_SELECTED
+          ['projects.id not in (?)', digest_rule.project_ids]
+        when DigestRule::MEMBER
+          ['members.user_id = ?', digest_rule.user.id]
+        else
+          raise RedmineDigest::Error.new "Unknown project selector (#{digest_rule.project_selector})"
+      end
     end
   end
 end

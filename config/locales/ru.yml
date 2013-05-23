@@ -1,1 +1,46 @@
 ru:
+  label_digest_rule: "Правила отбора задач для дайджеста"
+  label_digest_rules_plural: "Правила для дайджеста"
+  label_digest_rule_new: "Новое правило"
+  label_digest_rule_edit: "Изменить правило"
+
+  new_digest_rule: "Новое правило"
+
+  field_project_selector: "Проекты"
+  field_recurrent: "Периодичность"
+  field_digest_enabled: "Дайджест разрешен?"
+
+  text_event_types: "Выберите события для включения в дайджест"
+  text_digest: "%{recurrent} дайджест с изменениями от %{date_from} до %{date_to}"
+  text_digest_subject: "[%{recurrent} дайджест] %{name}"
+  text_digest_comments: "Задачи сгруппированы по последнему статусу"
+
+  button_digest_preview: "Предпросмотр"
+
+  title_digest_preview: "Предварительный просмотр дайджеста"
+
+  project_selector:
+    all: "Изменения задач в любых проектах"
+    selected: "Изменения задач в выбранных проектах"
+    not_selected: "Изменения задач во всех пректах кроме выбранных"
+    member: "Изменения задач во всех пректах где я участник"
+
+  project_selector_short:
+    all: "Все проекты"
+    selected: "Только выбранные проекты"
+    not_selected: "Кроме выбранных проектов"
+    member: "Проекты где я участник"
+
+  recurrent_types:
+    daily: "ежедневный"
+    weekly: "еженедельный"
+    monthly: "ежемесячный"
+
+  event_types:
+    status_changed: "Изменился статус"
+    percent_changed: "Изменился процент выполнения"
+    assignee_changed: "Изменилось назначение"
+    version_changed: "Изменилась версия"
+    project_changed: "Изменился проект"
+    comment_added: "Добавлен комментарий"
+    issue_created: "Добавлена новая задача"

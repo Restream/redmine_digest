@@ -30,6 +30,10 @@ class DigestIssue < Hashie::Dash
     event_types.any?
   end
 
+  def any_changes_events?
+    changes_event_types.any?
+  end
+
   def new_issue?
     event_types.include?(DigestEvent::ISSUE_CREATED)
   end

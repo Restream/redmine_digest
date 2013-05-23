@@ -28,7 +28,7 @@ module RedmineDigest
 
     def fetch_issues
       all_issue_ids = get_changed_issue_ids
-      all_issue_ids += get_created_issue_ids
+      all_issue_ids += get_created_issue_ids if wants_created?
       all_issue_ids.uniq!
 
       d_issues = []
@@ -81,12 +81,21 @@ module RedmineDigest
             end
           end
 
-          d_issues << d_issue if d_issue.any_events?
+          if wants_created?
+            d_issues << d_issue if d_issue.any_events?
+          else
+            d_issues << d_issue if d_issue.any_changes_events?
+          end
+
         end
 
       end
 
       d_issues
+    end
+
+    def wants_created?
+      digest_rule.event_type_enabled?(DigestEvent::ISSUE_CREATED)
     end
 
     def get_sorted_digest_issues
@@ -130,7 +139,11 @@ module RedmineDigest
     end
 
     def project_ids
-      @project_ids ||= Project.includes(:members).where(get_projects_scope).pluck(:id)
+      @project_ids ||= Project.
+          joins(:memberships).
+          where(get_projects_scope).
+          uniq.
+          pluck('projects.id')
     end
 
     def get_projects_scope

@@ -33,7 +33,7 @@ namespace :redmine_digest do
   def send_digest_by_rule(rule, npp)
     puts "#{Time.now} #{npp} Sending #{rule.recurrent} digest [#{rule.id}] to #{rule.user.mail} <#{rule.user.login}>"
 
-    digest = RedmineDigest::Digest.new(rule)
+    digest = RedmineDigest::Digest.new(rule, Time.now)
     DigestMailer.with_synched_deliveries do
       DigestMailer.digest_email(digest).deliver
     end

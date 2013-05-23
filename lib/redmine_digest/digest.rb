@@ -5,7 +5,7 @@ module RedmineDigest
 
     attr_reader :digest_rule, :date_to
 
-    delegate :name, :recurrent, :to => :digest_rule, :allow_nil => true
+    delegate :name, :recurrent, :project_selector, :to => :digest_rule, :allow_nil => true
 
     def initialize(digest_rule, date_to = nil)
       @digest_rule = digest_rule

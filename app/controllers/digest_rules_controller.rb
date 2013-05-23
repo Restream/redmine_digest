@@ -2,6 +2,8 @@ class DigestRulesController < ApplicationController
 
   before_filter :set_user
 
+  layout 'digest', :only => :show
+
   def new
     @digest_rule = @user.digest_rules.build
   end

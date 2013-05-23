@@ -22,12 +22,16 @@ namespace :redmine_digest do
     rules_count = rules.count
     puts "#{Time.now} Found #{rules_count} rules."
     rules.each_with_index do |rule, idx|
-      send_digest_by_rule(rule, "#{idx + 1} / #{rules_count}")
+      if rule.user.pref.digest_enabled?
+        send_digest_by_rule(rule, "#{idx + 1} / #{rules_count}")
+      else
+        puts "#{Time.now} Digest for user #{rule.user.login} is disabled."
+      end
     end
   end
 
   def send_digest_by_rule(rule, npp)
-    puts "#{Time.now} #{npp} Sending #{rule.recurrent} digest [#{rule.id}] to #{rule.user.mail}"
+    puts "#{Time.now} #{npp} Sending #{rule.recurrent} digest [#{rule.id}] to #{rule.user.mail} <#{rule.user.login}>"
 
     digest = RedmineDigest::Digest.new(rule)
     DigestMailer.with_synched_deliveries do

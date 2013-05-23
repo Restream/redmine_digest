@@ -46,7 +46,13 @@ module DigestRulesHelper
 
   def link_to_digest_issue(di)
     link_to digest_issue_text(di),
-            { :controller => 'issues', :action => 'show', :id => di.id },
+            {
+                :host => Setting.host_name,
+                :protocol => Setting.protocol,
+                :controller => 'issues',
+                :action => 'show',
+                :id => di.id
+            },
             :title => digest_issue_title(di)
   end
 

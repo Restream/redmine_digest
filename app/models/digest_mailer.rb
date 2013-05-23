@@ -7,14 +7,6 @@ class DigestMailer < ActionMailer::Base
 
   layout 'digest'
 
-  class << self
-
-    def default_url_options
-      { :host => Setting.host_name, :protocol => Setting.protocol }
-    end
-
-  end
-
   # Overview
   # Changed issues
   #   New Status (group issues by status)

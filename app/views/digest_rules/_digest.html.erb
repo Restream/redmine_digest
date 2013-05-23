@@ -21,6 +21,8 @@
             if (event = d_issue.events[event_type].last)
               link_to event.formatted_value,
                       {
+                          :host => Setting.host_name,
+                          :protocol => Setting.protocol,
                           :controller => 'issues',
                           :action => 'show',
                           :id => event.issue_id,

@@ -24,6 +24,10 @@ class DigestRule < ActiveRecord::Base
 
   scope :active, -> { where('active = ?', true) }
 
+  scope :daily,   -> { where(:recurrent => DAILY) }
+  scope :weekly,  -> { where(:recurrent => WEEKLY) }
+  scope :monthly, -> { where(:recurrent => MONTHLY) }
+
   after_initialize :set_default_values
 
   def raw_project_ids=(comma_seperated_ids)

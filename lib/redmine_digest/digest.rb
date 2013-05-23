@@ -5,7 +5,8 @@ module RedmineDigest
 
     attr_reader :digest_rule, :date_to
 
-    delegate :name, :recurrent, :project_selector, :to => :digest_rule, :allow_nil => true
+    delegate :name, :user, :recurrent, :project_selector,
+             :to => :digest_rule, :allow_nil => true
 
     def initialize(digest_rule, date_to = nil)
       @digest_rule = digest_rule
@@ -66,7 +67,7 @@ module RedmineDigest
             d_issue.status_id = status_id_change.value if status_id_change
 
             next if journal.private_notes? &&
-                    !digest_rule.user.allowed_to?(:view_private_notes, issue.project)
+                    !user.allowed_to?(:view_private_notes, issue.project)
 
             digest_rule.event_types.each do |event_type|
               event = DigestEvent.detect_change_event(event_type,
@@ -135,7 +136,7 @@ module RedmineDigest
     def get_issues_scope(issue_ids)
       Issue.includes(:author, :project, :journals => [:user, :details]).
           where('issues.id in (?)', issue_ids).
-          where(Issue.visible_condition(digest_rule.user))
+          where(Issue.visible_condition(user))
     end
 
     def project_ids
@@ -147,7 +148,7 @@ module RedmineDigest
     end
 
     def get_projects_scope
-      case digest_rule.project_selector
+      case project_selector
         when DigestRule::ALL
           nil
         when DigestRule::SELECTED
@@ -155,9 +156,9 @@ module RedmineDigest
         when DigestRule::NOT_SELECTED
           ['projects.id not in (?)', digest_rule.project_ids]
         when DigestRule::MEMBER
-          ['members.user_id = ?', digest_rule.user.id]
+          ['members.user_id = ?', user.id]
         else
-          raise RedmineDigest::Error.new "Unknown project selector (#{digest_rule.project_selector})"
+          raise RedmineDigest::Error.new "Unknown project selector (#{project_selector})"
       end
     end
   end

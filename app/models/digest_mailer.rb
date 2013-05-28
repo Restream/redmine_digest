@@ -18,8 +18,8 @@ class DigestMailer < ActionMailer::Base
     redmine_headers 'Digest-Name' => digest.name,
                     'Digest-Recurrent' => digest.recurrent,
                     'Digest-Projects' => digest.project_selector,
-                    'Digest-From' => digest.date_from,
-                    'Digest-To' => digest.date_to
+                    'Digest-From' => digest.time_from,
+                    'Digest-To' => digest.time_to
 
     set_language_if_valid digest.user.language
 

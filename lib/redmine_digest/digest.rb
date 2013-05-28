@@ -3,22 +3,22 @@ module RedmineDigest
     # batch size for fetching issues
     ISSUE_BATCH_SIZE = 300
 
-    attr_reader :digest_rule, :date_to
+    attr_reader :digest_rule, :time_to
 
     delegate :name, :user, :recurrent, :project_selector,
              :to => :digest_rule, :allow_nil => true
 
-    def initialize(digest_rule, date_to = nil)
+    def initialize(digest_rule, time_to = nil)
       @digest_rule = digest_rule
-      @date_to = date_to || Date.today.to_time
+      @time_to = time_to || Date.today.to_time
     end
 
     def issues
       @issues ||= fetch_issues
     end
 
-    def date_from
-      @date_from ||= get_date_from
+    def time_from
+      @time_from ||= get_time_from
     end
 
     def sorted_digest_issues
@@ -28,6 +28,8 @@ module RedmineDigest
     private
 
     def fetch_issues
+      raise 'DigestRule#user must be filled' if user.nil?
+
       all_issue_ids = get_changed_issue_ids
       all_issue_ids += get_created_issue_ids if wants_created?
       all_issue_ids.uniq!
@@ -47,7 +49,7 @@ module RedmineDigest
               :last_updated_on => issue.created_on
           )
 
-          if issue.created_on >= date_from && issue.created_on < date_to
+          if issue.created_on >= time_from && issue.created_on < time_to
             event = DigestEvent.new(DigestEvent::ISSUE_CREATED,
                                     issue.id,
                                     issue.created_on,
@@ -60,7 +62,7 @@ module RedmineDigest
           journals.sort_by(&:id).each_with_index { |j, i| j.indice = i + 1 }
 
           journals.each do |journal|
-            next if journal.created_on < date_from || journal.created_on >= date_to
+            next if journal.created_on < time_from || journal.created_on >= time_to
 
             # get status_id from change history
             status_id_change = DigestEvent.detect_journal_detail(journal, 'status_id')
@@ -102,20 +104,20 @@ module RedmineDigest
     def get_sorted_digest_issues
       result = ActiveSupport::OrderedHash.new
       IssueStatus.sorted.each do |status|
-        iss = issues.find_all { |i| i.status_id == status.id }.sort_by(&:last_updated_on)
+        iss = issues.find_all { |i| i.status_id.to_i == status.id }.sort_by(&:last_updated_on)
         result[status] = iss
       end
       result
     end
 
-    def get_date_from
+    def get_time_from
       case digest_rule.recurrent
         when DigestRule::DAILY
-          date_to - 1.day
+          time_to - 1.day
         when DigestRule::WEEKLY
-          date_to - 1.week
+          time_to - 1.week
         when DigestRule::MONTHLY
-          date_to - 1.month
+          time_to - 1.month
         else
           raise DigestError.new "Unknown recurrent type (#{digest_rule.recurrent})"
       end
@@ -123,13 +125,13 @@ module RedmineDigest
 
     def get_changed_issue_ids
       Journal.joins(:issue).where('issues.project_id in (?)', project_ids).
-          where('journals.created_on >= ? and journals.created_on < ?', date_from, date_to).
+          where('journals.created_on >= ? and journals.created_on < ?', time_from, time_to).
           uniq.pluck(:journalized_id)
     end
 
     def get_created_issue_ids
       Issue.where('issues.project_id in (?)', project_ids).
-          where('issues.created_on >= ? and issues.created_on < ?', date_from, date_to).
+          where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to).
           uniq.pluck(:id)
     end
 
@@ -157,6 +159,8 @@ module RedmineDigest
           ['projects.id not in (?)', digest_rule.project_ids]
         when DigestRule::MEMBER
           ['members.user_id = ?', user.id]
+        when DigestRule::MEMBER_NOT_SELECTED
+          ['members.user_id = ? and projects.id not in (?)', user.id, digest_rule.project_ids]
         else
           raise RedmineDigest::Error.new "Unknown project selector (#{project_selector})"
       end

@@ -3,7 +3,8 @@ class DigestRule < ActiveRecord::Base
   SELECTED = 'selected'
   NOT_SELECTED = 'not_selected'
   MEMBER = 'member'
-  PROJECT_SELECTOR_VALUES = [ALL, SELECTED, NOT_SELECTED, MEMBER]
+  MEMBER_NOT_SELECTED = 'member_not_selected'
+  PROJECT_SELECTOR_VALUES = [ALL, SELECTED, NOT_SELECTED, MEMBER, MEMBER_NOT_SELECTED]
 
   DAILY = 'daily'
   WEEKLY = 'weekly'
@@ -52,5 +53,6 @@ class DigestRule < ActiveRecord::Base
     self.active = true if active.nil?
     self.project_selector ||= MEMBER
     self.recurrent ||= WEEKLY
+    self.event_ids += DigestEvent::TYPES if event_ids.nil? || event_ids.empty?
   end
 end

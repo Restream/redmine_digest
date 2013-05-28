@@ -11,7 +11,7 @@ en:
   field_digest_enabled: "Is digest enabled?"
 
   text_event_types: "Select event types which should be included in digest"
-  text_digest: "%{recurrent} digest with changes from %{date_from} to %{date_to}"
+  text_digest: "%{recurrent} digest with changes from %{time_from} to %{time_to}"
   text_digest_subject: "[%{recurrent} digest] %{name}"
   text_digest_comments: "Issues grouped by last status"
 

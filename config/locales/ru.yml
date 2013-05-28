@@ -11,7 +11,7 @@ ru:
   field_digest_enabled: "Дайджест разрешен?"
 
   text_event_types: "Выберите события для включения в дайджест"
-  text_digest: "%{recurrent} дайджест с изменениями от %{date_from} до %{date_to}"
+  text_digest: "%{recurrent} дайджест с изменениями от %{time_from} до %{time_to}"
   text_digest_subject: "[%{recurrent} дайджест] %{name}"
   text_digest_comments: "Задачи сгруппированы по последнему статусу"
 

@@ -52,5 +52,6 @@ class DigestRule < ActiveRecord::Base
     self.active = true if active.nil?
     self.project_selector ||= MEMBER
     self.recurrent ||= WEEKLY
+    self.event_ids += DigestEvent::TYPES if event_ids.nil? || event_ids.empty?
   end
 end

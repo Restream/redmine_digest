@@ -23,13 +23,15 @@ en:
     all: "For any issue update on all projects"
     selected: "For any issue update on the selected projects only"
     not_selected: "For any issue update except the selected projects"
-    member: "For any issue update on all projects where I'm member"
+    member: "For update on all projects where I'm member"
+    member_not_selected: "For update on projects where I'm member except the selected ones"
 
   project_selector_short:
     all: "All projects"
     selected: "Selected projects only"
     not_selected: "Except the selected projects"
     member: "Projects where I'm member"
+    member_not_selected: "Projects where I'm member except the selected ones"
 
   recurrent_types:
     daily: "daily"

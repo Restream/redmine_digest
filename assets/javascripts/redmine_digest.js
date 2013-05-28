@@ -2,7 +2,7 @@ $(document).ready(function() {
 
   var toggleProjectList = function() {
     var selectedVal = $("#digest_rule_project_selector").val();
-    if ($.inArray(selectedVal, ["selected", "not_selected"]) < 0) {
+    if ($.inArray(selectedVal, ["selected", "not_selected", "member_not_selected"]) < 0) {
       $("#digest-rule-projects").hide();
     } else {
       $("#digest-rule-projects").show();

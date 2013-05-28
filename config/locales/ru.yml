@@ -13,7 +13,7 @@ ru:
   text_event_types: "Выберите события для включения в дайджест"
   text_digest: "%{recurrent} дайджест с изменениями от %{time_from} до %{time_to}"
   text_digest_subject: "[%{recurrent} дайджест] %{name}"
-  text_digest_comments: "Задачи сгруппированы по последнему статусу"
+  text_digest_comments: "Задачи сгруппированы по итоговому статусу"
 
   button_digest_preview: "Предпросмотр"
 
@@ -24,12 +24,14 @@ ru:
     selected: "Изменения задач в выбранных проектах"
     not_selected: "Изменения задач во всех пректах кроме выбранных"
     member: "Изменения задач во всех пректах где я участник"
+    member_not_selected: "Изменения задач во всех пректах где я участник, кроме выбранных"
 
   project_selector_short:
     all: "Все проекты"
     selected: "Только выбранные проекты"
     not_selected: "Кроме выбранных проектов"
     member: "Проекты где я участник"
+    member_not_selected: "Проекты где я участник, кроме выбранных"
 
   recurrent_types:
     daily: "ежедневный"

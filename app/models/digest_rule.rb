@@ -3,7 +3,8 @@ class DigestRule < ActiveRecord::Base
   SELECTED = 'selected'
   NOT_SELECTED = 'not_selected'
   MEMBER = 'member'
-  PROJECT_SELECTOR_VALUES = [ALL, SELECTED, NOT_SELECTED, MEMBER]
+  MEMBER_NOT_SELECTED = 'member_not_selected'
+  PROJECT_SELECTOR_VALUES = [ALL, SELECTED, NOT_SELECTED, MEMBER, MEMBER_NOT_SELECTED]
 
   DAILY = 'daily'
   WEEKLY = 'weekly'

@@ -159,6 +159,8 @@ module RedmineDigest
           ['projects.id not in (?)', digest_rule.project_ids]
         when DigestRule::MEMBER
           ['members.user_id = ?', user.id]
+        when DigestRule::MEMBER_NOT_SELECTED
+          ['members.user_id = ? and projects.id not in (?)', user.id, digest_rule.project_ids]
         else
           raise RedmineDigest::Error.new "Unknown project selector (#{project_selector})"
       end

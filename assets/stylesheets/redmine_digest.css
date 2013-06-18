@@ -10,3 +10,7 @@
 .tabular p.select2-field label {
   margin-top: 5px;
 }
+
+.select2-field input {
+  padding: 0;
+}

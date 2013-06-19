@@ -1,4 +1,4 @@
-require_dependency 'user_preference'
+require 'user_preference'
 
 module RedmineDigest::Patches
   module UserPreferencePatch

@@ -1,3 +1,7 @@
+require 'project'
+require 'principal'
+require 'user'
+
 module RedmineDigest
   module Patches
     module UserPatch

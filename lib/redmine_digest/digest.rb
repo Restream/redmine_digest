@@ -10,15 +10,25 @@ module RedmineDigest
 
     def initialize(digest_rule, time_to = nil)
       @digest_rule = digest_rule
-      @time_to = time_to || Date.today.to_time
+      @time_to_base = time_to
     end
 
     def issues
-      @issues ||= fetch_issues
+      @issues ||= use_user_time_zone do
+        fetch_issues
+      end
+    end
+
+    def time_to
+      @time_to ||= use_user_time_zone do
+        get_time_to
+      end
     end
 
     def time_from
-      @time_from ||= get_time_from
+      @time_from ||= use_user_time_zone do
+        get_time_from
+      end
     end
 
     def sorted_digest_issues
@@ -110,6 +120,10 @@ module RedmineDigest
       result
     end
 
+    def get_time_to
+      @time_to_base ||= Date.current.midnight
+    end
+
     def get_time_from
       case digest_rule.recurrent
         when DigestRule::DAILY
@@ -164,6 +178,10 @@ module RedmineDigest
         else
           raise RedmineDigest::Error.new "Unknown project selector (#{project_selector})"
       end
+    end
+
+    def use_user_time_zone(&block)
+      Time.use_zone(user.time_zone, &block)
     end
   end
 end

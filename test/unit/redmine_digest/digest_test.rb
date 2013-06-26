@@ -5,8 +5,12 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
            :issues, :issue_statuses, :trackers, :journals, :journal_details,
            :enabled_modules
 
+  def setup
+    @user = User.find(1)
+  end
+
   def test_time_from_daily
-    rule = DigestRule.new :recurrent => DigestRule::DAILY
+    rule = @user.digest_rules.build :recurrent => DigestRule::DAILY
     time_to = Date.new(2013, 05, 16).to_time
     time_from = Date.new(2013, 05, 15).to_time
     digest = RedmineDigest::Digest.new(rule, time_to)
@@ -14,7 +18,7 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
   end
 
   def test_time_from_weekly
-    rule = DigestRule.new :recurrent => DigestRule::WEEKLY
+    rule = @user.digest_rules.build :recurrent => DigestRule::WEEKLY
     time_to = Date.new(2013, 05, 16).to_time
     time_from = Date.new(2013, 05, 9).to_time
     digest = RedmineDigest::Digest.new(rule, time_to)
@@ -22,7 +26,7 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
   end
 
   def test_time_from_monthly
-    rule = DigestRule.new :recurrent => DigestRule::MONTHLY
+    rule = @user.digest_rules.build :recurrent => DigestRule::MONTHLY
     time_to = Date.new(2013, 05, 16).to_time
     time_from = Date.new(2013, 04, 16).to_time
     digest = RedmineDigest::Digest.new(rule, time_to)
@@ -122,4 +126,40 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
     assert_equal exp_ids, issue_ids
   end
 
+  def test_time_zone
+    Time.use_zone('UTC') do
+      # leave only ane issue at midnight UTC
+      Issue.update_all(:created_on => 1.year.ago)
+      Issue.find(1).update_attribute :created_on, Date.current.midnight
+    end
+
+    issue_ids = get_digest_issues_with_time_zone 'Azores' # UTC -01:00
+    assert_equal [], issue_ids, 'Should not see update at midnight UTC'
+  end
+
+  def test_time_zone2
+    Time.use_zone('UTC') do
+      # leave only ane issue at midnight UTC
+      Issue.delete_all('id <> 1')
+      Issue.find(1).update_attribute :created_on, Date.current.midnight
+    end
+
+    issue_ids = get_digest_issues_with_time_zone 'Moscow' # UTC +04:00
+    assert_equal [1], issue_ids, 'Should see update at midnight UTC'
+  end
+
+  def get_digest_issues_with_time_zone(time_zone)
+    user = User.find(2)
+    user.pref.time_zone = time_zone
+    user.pref.save!
+    user = User.find(2) # because time_zone is caching
+    rule = user.digest_rules.create(
+        :name => 'test',
+        :recurrent => DigestRule::DAILY,
+        :project_selector => DigestRule::ALL,
+        :event_ids => DigestEvent::TYPES
+    )
+    digest = RedmineDigest::Digest.new(rule)
+    digest.issues.map(&:id)
+  end
 end

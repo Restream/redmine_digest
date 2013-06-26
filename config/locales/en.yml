@@ -34,9 +34,9 @@ en:
     member_not_selected: "Projects where I'm member except the selected ones"
 
   recurrent_types:
-    daily: "daily"
-    weekly: "weekly"
-    monthly: "monthly"
+    daily: "Daily"
+    weekly: "Weekly"
+    monthly: "Monthly"
 
   event_types:
     status_changed: "Status changed"

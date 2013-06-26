@@ -34,9 +34,9 @@ ru:
     member_not_selected: "Проекты где я участник, кроме выбранных"
 
   recurrent_types:
-    daily: "ежедневный"
-    weekly: "еженедельный"
-    monthly: "ежемесячный"
+    daily: "Ежедневный"
+    weekly: "Еженедельный"
+    monthly: "Ежемесячный"
 
   event_types:
     status_changed: "Изменился статус"

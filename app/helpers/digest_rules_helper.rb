@@ -63,9 +63,9 @@ module DigestRulesHelper
   def digest_issue_title(di)
     [
         di.new_issue? ?
-            "#{l(:label_issue_added)} #{di.created_on.to_s(:short)}" : nil,
+            "#{l(:label_issue_added)} #{format_time(di.created_on)}" : nil,
         di.changes_event_types.any? ?
-            "#{l(:label_issue_updated)} #{di.last_updated_on.to_s(:short)}" : nil
+            "#{l(:label_issue_updated)} #{format_time(di.last_updated_on)}" : nil
     ].compact.join(', ')
   end
 end

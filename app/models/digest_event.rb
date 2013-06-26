@@ -21,6 +21,8 @@ class DigestEvent
   # length of notes preview
   NOTES_LENGTH = 30
 
+  include Redmine::I18n
+
   attr_reader :event_type, :issue_id, :created_on, :user, :journal
 
   class << self
@@ -33,9 +35,9 @@ class DigestEvent
         d.property == 'attr' && d.prop_key == prop_key && d.old_value != d.value
       end
     end
-    
+
     private
-    
+
     def has_change(event_type, journal)
       case event_type.to_sym
         when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
@@ -67,7 +69,7 @@ class DigestEvent
   end
 
   def event_summary
-    user_stamp = "#{I18n.l(created_on, :fromat => :short)} #{user}"
+    user_stamp = "#{format_time(created_on)} #{user}"
     case event_type
       when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
         "#{user_stamp}: #{formatted_old_value} -> #{formatted_value}"

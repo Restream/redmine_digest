@@ -4,7 +4,6 @@ class DigestRulesControllerTest < ActionController::TestCase
   fixtures :users, :user_preferences, :roles, :projects, :members, :member_roles,
            :issues, :issue_statuses, :trackers, :journals, :journal_details
 
-
   def setup
     @controller = DigestRulesController.new
     @request    = ActionController::TestRequest.new

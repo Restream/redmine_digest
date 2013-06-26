@@ -5,6 +5,10 @@
           :time_from => format_date(digest.time_from),
           :time_to => format_date(digest.time_to) %></h2>
 
+<% if digest.projects_count == 1 %>
+  <h3><%= "#{l(:field_project)}: #{digest.project_names.first}" %></h3>
+<% end %>
+
 <em><%= l(:text_digest_comments) %></em>
 
 <% digest.sorted_digest_issues.each do |status, digest_issues| %>
@@ -16,7 +20,9 @@
     <% digest_issues.each do |d_issue| %>
       <%= content_tag :li, :class => (d_issue.new_issue? ? 'new-issue' : nil) do %>
         <%= '+ ' if d_issue.new_issue? %>
-        <%= link_to_digest_issue(d_issue) %>
+        <%= link_to digest_issue_text(d_issue, digest.many_projects?),
+                    digest_issue_url(d_issue),
+                    :title => digest_issue_title(d_issue) %>
         <% if d_issue.changes_event_types.any? %>
           &nbsp;(<%= (d_issue.changes_event_types).map do |event_type|
             if (event = d_issue.events[event_type].last)

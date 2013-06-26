@@ -162,4 +162,18 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
     digest = RedmineDigest::Digest.new(rule)
     digest.issues.map(&:id)
   end
+
+  def test_digest_projects_count
+    user = User.find(2)
+    rule = user.digest_rules.create(
+        :name => 'test',
+        :recurrent => DigestRule::MONTHLY,
+        :project_selector => DigestRule::ALL,
+        :event_ids => DigestEvent::TYPES
+    )
+    time_to = Journal.last.created_on + 1.hour
+    digest = RedmineDigest::Digest.new(rule, time_to)
+    assert_equal 3, digest.projects_count
+    assert_true digest.many_projects?
+  end
 end

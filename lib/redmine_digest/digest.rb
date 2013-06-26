@@ -35,6 +35,18 @@ module RedmineDigest
       @sorted_digest_issues ||= get_sorted_digest_issues
     end
 
+    def projects_count
+      @projects_count ||= issues.map(&:project_id).uniq.count
+    end
+
+    def many_projects?
+      projects_count > 1
+    end
+
+    def project_names
+      @projects_names ||= issues.map(&:project_name).uniq
+    end
+
     private
 
     def fetch_issues
@@ -54,6 +66,7 @@ module RedmineDigest
               :id => issue.id,
               :subject => issue.subject,
               :status_id => issue.status_id,
+              :project_id => issue.project_id,
               :project_name => issue.project.name,
               :created_on => issue.created_on,
               :last_updated_on => issue.created_on

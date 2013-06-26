@@ -19,7 +19,7 @@ class DigestEvent
   }
 
   # length of notes preview
-  NOTES_LENGTH = 30
+  NOTES_LENGTH = 100
 
   include Redmine::I18n
 

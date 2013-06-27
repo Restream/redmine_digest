@@ -27,7 +27,7 @@ module RedmineDigest
 
     def time_from
       @time_from ||= use_user_time_zone do
-        get_time_from
+        digest_rule.calculate_time_from(time_to)
       end
     end
 
@@ -137,19 +137,6 @@ module RedmineDigest
       @time_to_base ||= Date.current.midnight
     end
 
-    def get_time_from
-      case digest_rule.recurrent
-        when DigestRule::DAILY
-          time_to - 1.day
-        when DigestRule::WEEKLY
-          time_to - 1.week
-        when DigestRule::MONTHLY
-          time_to - 1.month
-        else
-          raise DigestError.new "Unknown recurrent type (#{digest_rule.recurrent})"
-      end
-    end
-
     def get_changed_issue_ids
       Journal.joins(:issue).where('issues.project_id in (?)', project_ids).
           where('journals.created_on >= ? and journals.created_on < ?', time_from, time_to).
@@ -169,28 +156,7 @@ module RedmineDigest
     end
 
     def project_ids
-      @project_ids ||= Project.
-          joins(:memberships).
-          where(get_projects_scope).
-          uniq.
-          pluck('projects.id')
-    end
-
-    def get_projects_scope
-      case project_selector
-        when DigestRule::ALL
-          nil
-        when DigestRule::SELECTED
-          ['projects.id in (?)', digest_rule.project_ids]
-        when DigestRule::NOT_SELECTED
-          ['projects.id not in (?)', digest_rule.project_ids]
-        when DigestRule::MEMBER
-          ['members.user_id = ?', user.id]
-        when DigestRule::MEMBER_NOT_SELECTED
-          ['members.user_id = ? and projects.id not in (?)', user.id, digest_rule.project_ids]
-        else
-          raise RedmineDigest::Error.new "Unknown project selector (#{project_selector})"
-      end
+      @project_ids ||= digest_rule.affected_project_ids
     end
 
     def use_user_time_zone(&block)

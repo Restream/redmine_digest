@@ -27,7 +27,7 @@ class DigestEvent
 
   class << self
     def detect_change_event(event_type, issue_id, created_on, user, journal)
-      DigestEvent.new(event_type, issue_id, created_on, user, journal) if has_change(event_type, journal)
+      DigestEvent.new(event_type, issue_id, created_on, user, journal) if has_change?(event_type, journal)
     end
 
     def detect_journal_detail(journal, prop_key)
@@ -36,9 +36,7 @@ class DigestEvent
       end
     end
 
-    private
-
-    def has_change(event_type, journal)
+    def has_change?(event_type, journal)
       case event_type.to_sym
         when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
           true if detect_journal_detail(journal, PROP_KEYS[event_type])

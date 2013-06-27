@@ -10,19 +10,41 @@ module RedmineDigest
 
     def initialize(digest_rule, time_to = nil)
       @digest_rule = digest_rule
-      @time_to = time_to || Date.today.to_time
+      @time_to_base = time_to
     end
 
     def issues
-      @issues ||= fetch_issues
+      @issues ||= use_user_time_zone do
+        fetch_issues
+      end
+    end
+
+    def time_to
+      @time_to ||= use_user_time_zone do
+        get_time_to
+      end
     end
 
     def time_from
-      @time_from ||= get_time_from
+      @time_from ||= use_user_time_zone do
+        digest_rule.calculate_time_from(time_to)
+      end
     end
 
     def sorted_digest_issues
       @sorted_digest_issues ||= get_sorted_digest_issues
+    end
+
+    def projects_count
+      @projects_count ||= issues.map(&:project_id).uniq.count
+    end
+
+    def many_projects?
+      projects_count > 1
+    end
+
+    def project_names
+      @projects_names ||= issues.map(&:project_name).uniq
     end
 
     private
@@ -44,6 +66,7 @@ module RedmineDigest
               :id => issue.id,
               :subject => issue.subject,
               :status_id => issue.status_id,
+              :project_id => issue.project_id,
               :project_name => issue.project.name,
               :created_on => issue.created_on,
               :last_updated_on => issue.created_on
@@ -110,17 +133,8 @@ module RedmineDigest
       result
     end
 
-    def get_time_from
-      case digest_rule.recurrent
-        when DigestRule::DAILY
-          time_to - 1.day
-        when DigestRule::WEEKLY
-          time_to - 1.week
-        when DigestRule::MONTHLY
-          time_to - 1.month
-        else
-          raise DigestError.new "Unknown recurrent type (#{digest_rule.recurrent})"
-      end
+    def get_time_to
+      @time_to_base ||= Date.current.midnight
     end
 
     def get_changed_issue_ids
@@ -142,28 +156,11 @@ module RedmineDigest
     end
 
     def project_ids
-      @project_ids ||= Project.
-          joins(:memberships).
-          where(get_projects_scope).
-          uniq.
-          pluck('projects.id')
+      @project_ids ||= digest_rule.affected_project_ids
     end
 
-    def get_projects_scope
-      case project_selector
-        when DigestRule::ALL
-          nil
-        when DigestRule::SELECTED
-          ['projects.id in (?)', digest_rule.project_ids]
-        when DigestRule::NOT_SELECTED
-          ['projects.id not in (?)', digest_rule.project_ids]
-        when DigestRule::MEMBER
-          ['members.user_id = ?', user.id]
-        when DigestRule::MEMBER_NOT_SELECTED
-          ['members.user_id = ? and projects.id not in (?)', user.id, digest_rule.project_ids]
-        else
-          raise RedmineDigest::Error.new "Unknown project selector (#{project_selector})"
-      end
+    def use_user_time_zone(&block)
+      Time.use_zone(user.time_zone, &block)
     end
   end
 end

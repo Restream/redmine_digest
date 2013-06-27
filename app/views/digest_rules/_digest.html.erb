@@ -1,8 +1,13 @@
 <h1><%= digest.name %></h1>
 
-<h2><%= t(:text_digest, :recurrent => digest.recurrent.camelcase,
-          :time_from => digest.time_from.to_s(:short),
-          :time_to => digest.time_to.to_s(:short)) %></h2>
+<h2><%= t :text_digest,
+          :recurrent => t(digest.recurrent, :scope => 'recurrent_types'),
+          :time_from => format_date(digest.time_from),
+          :time_to => format_date(digest.time_to) %></h2>
+
+<% if digest.projects_count == 1 %>
+  <h3><%= "#{l(:field_project)}: #{digest.project_names.first}" %></h3>
+<% end %>
 
 <em><%= l(:text_digest_comments) %></em>
 
@@ -13,24 +18,31 @@
 
   <ul>
     <% digest_issues.each do |d_issue| %>
+
       <%= content_tag :li, :class => (d_issue.new_issue? ? 'new-issue' : nil) do %>
-        <%= '+ ' if d_issue.new_issue? %>
-        <%= link_to_digest_issue(d_issue) %>
+        <span class='sign'><%= d_issue.new_issue? ? '+' : '&nbsp;'.html_safe %></span>
+        <%= link_to digest_issue_text(d_issue, digest.many_projects?),
+                    digest_issue_url(d_issue),
+                    :title => digest_issue_title(d_issue) %>
         <% if d_issue.changes_event_types.any? %>
-          &nbsp;(<%= (d_issue.changes_event_types).map do |event_type|
-            if (event = d_issue.events[event_type].last)
-              link_to event.formatted_value,
-                      {
-                          :host => Setting.host_name,
-                          :protocol => Setting.protocol,
-                          :controller => 'issues',
-                          :action => 'show',
-                          :id => event.issue_id,
-                          :anchor => "note-#{event.indice}"
-                      },
-                      :title => d_issue.events_summary(event_type)
-            end
-          end.join(', ').html_safe %>)
+          <p class='events'>
+            <% (d_issue.changes_event_types).map do |event_type| %>
+              <% if (event = d_issue.events[event_type].last) %>
+                <span class='event <%= event_type %>'>
+                  <%= link_to event.formatted_value,
+                          {
+                              :host => Setting.host_name,
+                              :protocol => Setting.protocol,
+                              :controller => 'issues',
+                              :action => 'show',
+                              :id => event.issue_id,
+                              :anchor => "note-#{event.indice}"
+                          },
+                          :title => d_issue.events_summary(event_type) %>
+                </span>
+              <% end %>
+            <% end %>
+          </p>
         <% end %>
       <% end %>
     <% end %>

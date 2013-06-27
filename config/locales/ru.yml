@@ -9,6 +9,7 @@ ru:
   field_project_selector: "Проекты"
   field_recurrent: "Периодичность"
   field_digest_enabled: "Дайджест разрешен?"
+  field_skip_digest_notifications: "Не уведомлять об изменениях которые попадут в дайджест"
 
   text_event_types: "Выберите события для включения в дайджест"
   text_digest: "%{recurrent} дайджест с изменениями от %{time_from} до %{time_to}"
@@ -34,9 +35,9 @@ ru:
     member_not_selected: "Проекты где я участник, кроме выбранных"
 
   recurrent_types:
-    daily: "ежедневный"
-    weekly: "еженедельный"
-    monthly: "ежемесячный"
+    daily: "Ежедневный"
+    weekly: "Еженедельный"
+    monthly: "Ежемесячный"
 
   event_types:
     status_changed: "Изменился статус"

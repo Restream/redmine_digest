@@ -34,11 +34,15 @@ namespace :redmine_digest do
     puts "#{Time.now} #{npp} Sending #{rule.recurrent} digest [#{rule.id}] to #{rule.user.mail} <#{rule.user.login}>"
 
     digest = RedmineDigest::Digest.new(rule, Time.now)
-    DigestMailer.with_synched_deliveries do
-      DigestMailer.digest_email(digest).deliver
+    if digest.issues.any?
+      DigestMailer.with_synched_deliveries do
+        DigestMailer.digest_email(digest).deliver
+      end
+      puts "#{Time.now} Done. Digest contains #{digest.issues.count} issues."
+    else
+      puts "#{Time.now} Done. Digest empty and was not sent."
     end
 
-    puts "#{Time.now} Done. Digest contains #{digest.issues.count} issues."
   rescue StandardError => e
     $stderr.puts "#{Time.now} Failed to send digest with error: #{e.class.name}\n#{e.message}"
     if Rails.env == 'development'

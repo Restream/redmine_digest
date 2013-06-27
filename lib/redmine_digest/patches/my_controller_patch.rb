@@ -1,3 +1,5 @@
+require 'my_controller'
+
 module RedmineDigest
   module Patches
     module MyControllerPatch

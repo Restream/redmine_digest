@@ -27,7 +27,7 @@ class DigestMailer < ActionMailer::Base
 
     mail :to => digest.user.mail,
          :subject => l(:text_digest_subject,
-                       :recurrent => digest.recurrent,
+                       :recurrent => l(digest.recurrent, :scope => 'recurrent_types'),
                        :name => digest.name)
   end
 

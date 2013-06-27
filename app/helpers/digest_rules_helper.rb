@@ -44,28 +44,30 @@ module DigestRulesHelper
     "digest_rule_event_type_#{event_type}"
   end
 
-  def link_to_digest_issue(di)
-    link_to digest_issue_text(di),
-            {
-                :host => Setting.host_name,
-                :protocol => Setting.protocol,
-                :controller => 'issues',
-                :action => 'show',
-                :id => di.id
-            },
-            :title => digest_issue_title(di)
+  def digest_issue_url(di)
+    {
+        :host => Setting.host_name,
+        :protocol => Setting.protocol,
+        :controller => 'issues',
+        :action => 'show',
+        :id => di.id
+    }
   end
 
-  def digest_issue_text(di)
-    "##{di.id} [#{di.project_name}] #{di.subject}"
+  def digest_issue_text(di, show_project_name = true)
+    if show_project_name
+      "##{di.id} [#{di.project_name}] #{di.subject}"
+    else
+      "##{di.id} #{di.subject}"
+    end
   end
 
   def digest_issue_title(di)
     [
         di.new_issue? ?
-            "#{l(:label_issue_added)} #{di.created_on.to_s(:short)}" : nil,
+            "#{l(:label_issue_added)} #{format_time(di.created_on)}" : nil,
         di.changes_event_types.any? ?
-            "#{l(:label_issue_updated)} #{di.last_updated_on.to_s(:short)}" : nil
+            "#{l(:label_issue_updated)} #{format_time(di.last_updated_on)}" : nil
     ].compact.join(', ')
   end
 end

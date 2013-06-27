@@ -1,6 +1,7 @@
 class DigestIssue < Hashie::Dash
   property :id, :required => true
   property :subject, :required => true
+  property :project_id
   property :project_name
 
   property :created_on

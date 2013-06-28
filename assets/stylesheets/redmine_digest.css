@@ -14,3 +14,7 @@
 .select2-field input {
   padding: 0;
 }
+
+fieldset.digest-rules table.list td.buttons {
+  white-space: normal;
+}

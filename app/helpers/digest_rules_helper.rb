@@ -70,4 +70,17 @@ module DigestRulesHelper
             "#{l(:label_issue_updated)} #{format_time(di.last_updated_on)}" : nil
     ].compact.join(', ')
   end
+
+  def event_type_color(event_type)
+    case event_type
+      when DigestEvent::STATUS_CHANGED then '#defff1'
+      when DigestEvent::PERCENT_CHANGED then '#d8d8ff'
+      when DigestEvent::ASSIGNEE_CHANGED then '#fbe3ff'
+      when DigestEvent::VERSION_CHANGED then '#ffe1e3'
+      when DigestEvent::PROJECT_CHANGED then '#fffcde'
+      when DigestEvent::COMMENT_ADDED then '#e0ffe1'
+      when DigestEvent::ISSUE_CREATED then '#e1ffe3'
+      else 'gray'
+    end
+  end
 end

@@ -15,6 +15,7 @@ module RedmineDigest
         found_users = found_mails.map { |mail| User.find_by_mail(mail) }
         found_users.reject do |found_user|
           found_user.pref.skip_digest_notifications? &&
+              !found_user.involved_in?(self) &&
               found_user.receive_digest_on_issue_created?(self)
         end.map(&:mail)
       end
@@ -24,6 +25,7 @@ module RedmineDigest
         found_watchers = found_mails.map { |mail| User.find_by_mail(mail) }
         found_watchers.reject do |found_watcher|
           found_watcher.pref.skip_digest_notifications? &&
+              !watched_by?(found_watcher) &&
               found_watcher.receive_digest_on_issue_created?(self)
         end.map(&:mail)
       end

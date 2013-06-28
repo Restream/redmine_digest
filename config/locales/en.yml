@@ -9,7 +9,7 @@ en:
   field_project_selector: "Projects"
   field_recurrent: "Recurrent"
   field_digest_enabled: "Is digest enabled?"
-  field_skip_digest_notifications: "Skip notifications that will be included in digest"
+  field_skip_digest_notifications: "Skip notifications that will be included in digest (except things I watch or I'm involved in)"
 
   text_event_types: "Select event types which should be included in digest"
   text_digest: "%{recurrent} digest with changes from %{time_from} to %{time_to}"

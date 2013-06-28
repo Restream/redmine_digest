@@ -24,6 +24,12 @@ module RedmineDigest
           res || rule.include_journal_on_update?(journal)
         end
       end
+
+      def involved_in?(issue)
+        issue.author == self ||
+            is_or_belongs_to?(issue.assigned_to) ||
+            is_or_belongs_to?(issue.assigned_to_was)
+      end
     end
   end
 end

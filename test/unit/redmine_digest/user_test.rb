@@ -5,8 +5,6 @@ class RedmineDigest::UserTest < ActiveSupport::TestCase
 
   def setup
     @user = User.find(2)
-    @user.pref.digest_enabled = true
-    @user.pref.save!
   end
 
   def test_user_receive_digest_on_issue_created

@@ -14,7 +14,7 @@
         <th><%= l( :field_active ) %></th>
         <th><%= l( :field_recurrent ) %></th>
         <th><%= l( :field_name ) %></th>
-        <th width="10%"></th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -26,17 +26,19 @@
           <td align="center"><%= l(digest_rule.recurrent, :scope => 'recurrent_types') %></td>
           <td align="center"><%= digest_rule.name %></td>
           <td class="buttons">
-            <%= link_to l(:button_digest_preview),
-                        digest_rule_path(digest_rule),
+            <%= link_to '', digest_rule_path(digest_rule),
                         :class => 'icon icon-summary',
                         :title => l(:title_digest_preview) %>
 
-            <%= link_to l(:button_edit), edit_digest_rule_path(digest_rule), :class => 'icon icon-edit' %>
+            <%= link_to '', edit_digest_rule_path(digest_rule),
+                        :class => 'icon icon-edit',
+                        :title => l(:button_edit) %>
 
-            <%= link_to l(:button_delete), digest_rule_path(digest_rule),
+            <%= link_to '', digest_rule_path(digest_rule),
                         :method  => :delete,
                         :confirm => l(:text_are_you_sure),
-                        :class   => 'icon icon-del' %>
+                        :class   => 'icon icon-del',
+                        :title => l(:button_delete) %>
           </td>
         </tr>
       <% end %>

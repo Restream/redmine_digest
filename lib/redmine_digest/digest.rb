@@ -8,9 +8,10 @@ module RedmineDigest
     delegate :name, :user, :recurrent, :project_selector,
              :to => :digest_rule, :allow_nil => true
 
-    def initialize(digest_rule, time_to = nil)
+    def initialize(digest_rule, time_to = nil, issue_limit = nil)
       @digest_rule = digest_rule
       @time_to_base = time_to
+      @issue_limit = issue_limit
     end
 
     def issues
@@ -55,6 +56,7 @@ module RedmineDigest
       all_issue_ids = get_changed_issue_ids
       all_issue_ids += get_created_issue_ids if wants_created?
       all_issue_ids.uniq!
+      all_issue_ids = all_issue_ids.take(@issue_limit) if @issue_limit
 
       d_issues = []
 

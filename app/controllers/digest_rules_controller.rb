@@ -1,5 +1,7 @@
 class DigestRulesController < ApplicationController
 
+  PREVIEW_ISSUE_LIMIT = 20
+
   before_filter :set_user
 
   def new
@@ -36,7 +38,7 @@ class DigestRulesController < ApplicationController
 
   def show
     digest_rule = @user.digest_rules.find(params[:id])
-    @digest = RedmineDigest::Digest.new(digest_rule)
+    @digest = RedmineDigest::Digest.new(digest_rule, nil, PREVIEW_ISSUE_LIMIT)
     render :layout => 'digest'
   end
 

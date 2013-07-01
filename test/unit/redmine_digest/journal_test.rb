@@ -78,8 +78,6 @@ class RedmineDigest::JournalTest < ActiveSupport::TestCase
   end
 
   def create_digest_rule(user)
-    user.pref.digest_enabled = true
-    user.pref.save!
     user.digest_rules.create(
         :name => 'test',
         :recurrent => DigestRule::MONTHLY,

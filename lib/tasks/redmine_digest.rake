@@ -22,11 +22,7 @@ namespace :redmine_digest do
     rules_count = rules.count
     puts "#{Time.now} Found #{rules_count} rules."
     rules.each_with_index do |rule, idx|
-      if rule.user.pref.digest_enabled?
-        send_digest_by_rule(rule, "#{idx + 1} / #{rules_count}")
-      else
-        puts "#{Time.now} Digest for user #{rule.user.login} is disabled."
-      end
+      send_digest_by_rule(rule, "#{idx + 1} / #{rules_count}")
     end
   end
 

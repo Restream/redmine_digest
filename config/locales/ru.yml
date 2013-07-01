@@ -8,7 +8,6 @@ ru:
 
   field_project_selector: "Проекты"
   field_recurrent: "Периодичность"
-  field_digest_enabled: "Дайджест разрешен?"
   field_skip_digest_notifications: "Не уведомлять об изменениях которые попадут в дайджест (кроме объектов, которые я отслеживаю или в которых участвую)"
 
   text_event_types: "Выберите события для включения в дайджест"

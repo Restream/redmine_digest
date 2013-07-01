@@ -13,22 +13,11 @@ class RedmineDigest::MyControllerTest < ActionController::TestCase
     @request.session[:user_id] = @user.id
   end
 
-  def test_skip_digest_notification_shown_when_digest_enable
-    @user.pref.digest_enabled = true
-    @user.pref.save!
+  def test_skip_digest_notification_shown
     get :account
     assert_response :success
     assert_tag :input,
                :attributes => { :name => 'pref[skip_digest_notifications]' }
-  end
-
-  def test_skip_digest_notification_not_show_when_digest_disable
-    @user.pref.digest_enabled = false
-    @user.pref.save!
-    get :account
-    assert_response :success
-    assert_no_tag :input,
-                  :attributes => { :name => 'pref[skip_digest_notifications]' }
   end
 
 end

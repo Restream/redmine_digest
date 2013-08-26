@@ -39,10 +39,13 @@ ru:
     monthly: "Ежемесячный"
 
   event_types:
+    issue_created: "Добавлена новая задача"
+    comment_added: "Добавлен комментарий"
+    attachment_added: "Добавлено вложение"
     status_changed: "Изменился статус"
     percent_changed: "Изменился процент выполнения"
     assignee_changed: "Изменилось назначение"
     version_changed: "Изменилась версия"
     project_changed: "Изменился проект"
-    comment_added: "Добавлен комментарий"
-    issue_created: "Добавлена новая задача"
+    subject_changed: "Изменилась тема"
+    other_attr_changed: "Другие изменения"

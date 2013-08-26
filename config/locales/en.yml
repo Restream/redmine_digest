@@ -39,10 +39,13 @@ en:
     monthly: "Monthly"
 
   event_types:
+    issue_created: "Issue created"
+    comment_added: "Comment added"
+    attachment_added: "Attachment added"
     status_changed: "Status changed"
     percent_changed: "Percent changed"
     assignee_changed: "Assignee changed"
     version_changed: "Version changed"
     project_changed: "Project changed"
-    comment_added: "Comment added"
-    issue_created: "Issue created"
+    subject_changed: "Subject changed"
+    other_attr_changed: "Other changes"

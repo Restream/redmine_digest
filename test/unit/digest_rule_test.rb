@@ -18,8 +18,8 @@ class DigestRuleTest < ActiveSupport::TestCase
         :event_ids => [DigestEvent::ISSUE_CREATED]
     )
 
-    assert_true  rule.include_issue_on_create?(Issue.find(1))
-    assert_false rule.include_issue_on_create?(Issue.find(4))
+    assert_true  rule.apply_for_created_issue?(Issue.find(1))
+    assert_false rule.apply_for_created_issue?(Issue.find(4))
   end
 
   def test_do_not_include_issue_on_create
@@ -31,8 +31,8 @@ class DigestRuleTest < ActiveSupport::TestCase
         :event_ids => []
     )
 
-    assert_false rule.include_issue_on_create?(Issue.find(1))
-    assert_false rule.include_issue_on_create?(Issue.find(4))
+    assert_false rule.apply_for_created_issue?(Issue.find(1))
+    assert_false rule.apply_for_created_issue?(Issue.find(4))
   end
 
   def test_include_journal_on_update
@@ -45,7 +45,7 @@ class DigestRuleTest < ActiveSupport::TestCase
     )
     journal = Journal.find(1) # issue_id: 1, changed status and done_ratio
 
-    assert_true rule.include_journal_on_update?(journal)
+    assert_true rule.apply_for_updated_issue?(journal)
   end
 
   def test_do_not_include_journal_on_update
@@ -60,7 +60,7 @@ class DigestRuleTest < ActiveSupport::TestCase
     )
     journal = Journal.find(1) # issue_id: 1, changed status and done_ratio
 
-    assert_false rule.include_journal_on_update?(journal)
+    assert_false rule.apply_for_updated_issue?(journal)
   end
 
 end

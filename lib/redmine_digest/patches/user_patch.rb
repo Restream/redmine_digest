@@ -13,13 +13,13 @@ module RedmineDigest
 
       def receive_digest_on_issue_created?(issue)
         digest_rules.active.inject(false) do |res, rule|
-          res || rule.include_issue_on_create?(issue)
+          res || rule.apply_for_created_issue?(issue)
         end
       end
 
       def receive_digest_on_journal_updated?(journal)
         digest_rules.active.inject(false) do |res, rule|
-          res || rule.include_journal_on_update?(journal)
+          res || rule.apply_for_updated_issue?(journal)
         end
       end
 

@@ -1,21 +1,26 @@
 class DigestEvent
-  STATUS_CHANGED    = :status_changed
-  PERCENT_CHANGED   = :percent_changed
-  ASSIGNEE_CHANGED  = :assignee_changed
-  VERSION_CHANGED   = :version_changed
-  PROJECT_CHANGED   = :project_changed
-  COMMENT_ADDED     = :comment_added
-  ISSUE_CREATED     = :issue_created
+  ISSUE_CREATED      = :issue_created
+  COMMENT_ADDED      = :comment_added
+  ATTACHMENT_ADDED   = :attachment_added
+  STATUS_CHANGED     = :status_changed
+  PERCENT_CHANGED    = :percent_changed
+  ASSIGNEE_CHANGED   = :assignee_changed
+  VERSION_CHANGED    = :version_changed
+  PROJECT_CHANGED    = :project_changed
+  SUBJECT_CHANGED    = :subject_changed
+  OTHER_ATTR_CHANGED = :other_attr_changed
 
-  TYPES = [STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED,
-           PROJECT_CHANGED, COMMENT_ADDED, ISSUE_CREATED]
+  TYPES = [ISSUE_CREATED, COMMENT_ADDED, ATTACHMENT_ADDED,
+           STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED,
+           PROJECT_CHANGED, SUBJECT_CHANGED, OTHER_ATTR_CHANGED]
 
   PROP_KEYS = {
-      STATUS_CHANGED    => 'status_id',
-      PERCENT_CHANGED   => 'done_ratio',
-      ASSIGNEE_CHANGED  => 'assigned_to_id',
-      VERSION_CHANGED   => 'fixed_version_id',
-      PROJECT_CHANGED   => 'project_id'
+      'status_id'        => STATUS_CHANGED,
+      'done_ratio'       => PERCENT_CHANGED,
+      'assigned_to_id'   => ASSIGNEE_CHANGED,
+      'fixed_version_id' => VERSION_CHANGED,
+      'project_id'       => PROJECT_CHANGED,
+      'subject'          => SUBJECT_CHANGED
   }
 
   # length of notes preview
@@ -23,39 +28,16 @@ class DigestEvent
 
   include Redmine::I18n
 
-  attr_reader :event_type, :issue_id, :created_on, :user, :journal
-
-  class << self
-    def detect_change_event(event_type, issue_id, created_on, user, journal)
-      DigestEvent.new(event_type, issue_id, created_on, user, journal) if has_change?(event_type, journal)
-    end
-
-    def detect_journal_detail(journal, prop_key)
-      journal.details.detect do |d|
-        d.property == 'attr' && d.prop_key == prop_key && d.old_value != d.value
-      end
-    end
-
-    def has_change?(event_type, journal)
-      case event_type.to_sym
-        when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
-          true if detect_journal_detail(journal, PROP_KEYS[event_type])
-        when COMMENT_ADDED
-          journal.notes.present?
-        when ISSUE_CREATED
-          false
-        else
-          raise RedmineDigest::DigestError.new "Unknown event type (#{event_type})"
-      end
-    end
-  end
+  attr_reader :event_type, :issue_id, :created_on, :user, :journal, :journal_detail
 
   def old_value
     journal_detail && journal_detail.old_value
   end
 
   def value
-    event_type == COMMENT_ADDED ? journal.notes : (journal_detail && journal_detail.value)
+    event_type == COMMENT_ADDED ?
+        journal.notes :
+        (journal_detail && journal_detail.value)
   end
 
   def formatted_old_value
@@ -69,12 +51,15 @@ class DigestEvent
   def event_summary
     user_stamp = "#{format_time(created_on)} #{user}"
     case event_type
-      when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED, PROJECT_CHANGED
-        "#{user_stamp}: #{formatted_old_value} -> #{formatted_value}"
-      when COMMENT_ADDED
-        "#{user_stamp}: #{value}"
       when ISSUE_CREATED
         user_stamp
+      when COMMENT_ADDED
+        "#{user_stamp}: #{value}"
+      when ATTACHMENT_ADDED
+        "#{user_stamp}: #{value}"
+      when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED,
+          VERSION_CHANGED, PROJECT_CHANGED, SUBJECT_CHANGED, OTHER_ATTR_CHANGED
+        "#{user_stamp}: #{formatted_old_value} -> #{formatted_value}"
       else
         raise RedmineDigest::DigestError.new "Unknown event type (#{event_type})"
     end
@@ -84,9 +69,9 @@ class DigestEvent
     journal ? journal.indice : 0
   end
 
-  def initialize(event_type, issue_id, created_on, user, journal = nil)
-    @event_type, @issue_id, @created_on, @user, @journal =
-        event_type, issue_id, created_on, user, journal
+  def initialize(event_type, issue_id, created_on, user, journal = nil, journal_detail = nil)
+    @event_type, @issue_id, @created_on, @user, @journal, @journal_detail =
+        event_type, issue_id, created_on, user, journal, journal_detail
   end
 
   private
@@ -113,11 +98,5 @@ class DigestEvent
     end
   rescue
     '<unknown>'
-  end
-
-  def journal_detail
-    @journal_detail ||= begin
-      self.class.detect_journal_detail(journal, PROP_KEYS[event_type]) if journal
-    end
   end
 end

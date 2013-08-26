@@ -89,23 +89,18 @@ module RedmineDigest
           journals.each do |journal|
             next if journal.created_on < time_from || journal.created_on >= time_to
 
+            events = digest_rule.find_events_by_journal(journal)
+
             # get status_id from change history
-            status_id_change = DigestEvent.detect_journal_detail(journal, 'status_id')
+            status_id_change = events.detect{ |e| e.event_type == DigestEvent::STATUS_CHANGED }
             d_issue.status_id = status_id_change.value if status_id_change
 
             next if journal.private_notes? &&
                     !user.allowed_to?(:view_private_notes, issue.project)
 
-            digest_rule.event_types.each do |event_type|
-              event = DigestEvent.detect_change_event(event_type,
-                                                      issue.id,
-                                                      journal.created_on,
-                                                      journal.user.to_s,
-                                                      journal)
-              if event
-                d_issue.last_updated_on = journal.created_on
-                d_issue.events[event_type] << event
-              end
+            events.each do |event|
+              d_issue.last_updated_on = journal.created_on
+              d_issue.events[event.event_type] << event
             end
           end
 

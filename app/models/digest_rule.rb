@@ -23,7 +23,7 @@ class DigestRule < ActiveRecord::Base
   validates :project_selector, :inclusion => { :in => PROJECT_SELECTOR_VALUES }
   validates :recurrent, :inclusion => { :in => RECURRENT_TYPES }
 
-  scope :active, -> { where('active = ?', true) }
+  scope :active,  -> { where('active = ?', true) }
 
   scope :daily,   -> { where(:recurrent => DAILY) }
   scope :weekly,  -> { where(:recurrent => WEEKLY) }
@@ -47,18 +47,6 @@ class DigestRule < ActiveRecord::Base
     event_ids ? event_ids.map(&:to_sym) : []
   end
 
-  def include_issue_on_create?(issue)
-    event_type_enabled?(DigestEvent::ISSUE_CREATED) &&
-        affected_project_ids.include?(issue.project_id)
-  end
-
-  def include_journal_on_update?(journal)
-    has_updates = event_types.inject(false) do |res, event_type|
-      res || DigestEvent.has_change?(event_type, journal)
-    end
-    has_updates && affected_project_ids.include?(journal.issue.project_id)
-  end
-
   def affected_project_ids
     Project.
         joins(:memberships).
@@ -79,7 +67,59 @@ class DigestRule < ActiveRecord::Base
     end
   end
 
+  def find_events_by_journal(journal)
+    return [] unless affected_project_ids.include?(journal.issue.project_id)
+
+    events = []
+
+    issue_id = journal.issue.id
+    created_on = journal.created_on
+    user = journal.user.to_s
+
+    if journal.notes.present? && event_type_enabled?(DigestEvent::COMMENT_ADDED)
+      events << DigestEvent.new(
+          DigestEvent::COMMENT_ADDED, issue_id, created_on, user, journal)
+    end
+
+    journal.details.each do |jdetail|
+      event = event_for_journal_detail(jdetail)
+      events << event if event && event_type_enabled?(event.event_type)
+    end
+
+    events
+  end
+
+  def apply_for_created_issue?(issue)
+    event_type_enabled?(DigestEvent::ISSUE_CREATED) &&
+        affected_project_ids.include?(issue.project_id)
+  end
+
+  def apply_for_updated_issue?(journal)
+    find_events_by_journal(journal).any?
+  end
+
   private
+
+  def event_for_journal_detail(jdetail)
+    journal = jdetail.journal
+    issue_id = journal.journalized_id
+    created_on = journal.created_on
+    user = journal.user.to_s
+
+    if jdetail.property == 'attr' && DigestEvent::PROP_KEYS.has_key?(jdetail.prop_key)
+      event_type = DigestEvent::PROP_KEYS[jdetail.prop_key]
+      return DigestEvent.new(event_type, issue_id, created_on,
+                             user, journal, jdetail)
+    end
+
+    if jdetail.property == 'attachment'
+      return DigestEvent.new(DigestEvent::ATTACHMENT_ADDED, issue_id, created_on,
+                             user, journal, jdetail)
+    end
+
+    DigestEvent.new(DigestEvent::OTHER_ATTR_CHANGED, issue_id, created_on,
+                    user, journal, jdetail)
+  end
 
   def get_projects_scope
     case project_selector

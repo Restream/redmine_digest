@@ -71,7 +71,8 @@ module RedmineDigest
               :project_id => issue.project_id,
               :project_name => issue.project.name,
               :created_on => issue.created_on,
-              :last_updated_on => issue.created_on
+              :last_updated_on => issue.created_on,
+              :priority => issue.priority
           )
 
           if include_issue_add_event?(issue)
@@ -151,7 +152,9 @@ module RedmineDigest
     def get_sorted_digest_issues
       result = ActiveSupport::OrderedHash.new
       IssueStatus.sorted.each do |status|
-        iss = issues.find_all { |i| i.status_id.to_i == status.id }.sort_by(&:last_updated_on)
+        iss = issues.
+            find_all { |i| i.status_id.to_i == status.id }.
+            sort_by(&:sort_key)
         result[status] = iss
       end
       result

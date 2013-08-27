@@ -11,6 +11,8 @@ class DigestIssue < Hashie::Dash
   property :is_new, :default => false
   property :events
 
+  property :priority
+
   def last_event_value(event_type)
     events[event_type].last.value
   end
@@ -45,5 +47,13 @@ class DigestIssue < Hashie::Dash
 
   def changes_event_types
     event_types.reject { |event_type| event_type == DigestEvent::ISSUE_CREATED }
+  end
+
+  def sort_key
+    priority.position * 1000 + uniq_events.count
+  end
+
+  def uniq_events
+    events.values.flatten.compact.uniq
   end
 end

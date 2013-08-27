@@ -31,10 +31,12 @@
         <span style="font-size: smaller; font-weight: bold; width: 1em; float: left; color: green;">
           <%= d_issue.new_issue? ? '+' : '&nbsp;'.html_safe %>
         </span>
-        <%= link_to digest_issue_text(d_issue, digest.many_projects?),
-                    digest_issue_url(d_issue),
+        <%= link_to digest_issue_url(d_issue),
                     :title => digest_issue_title(d_issue),
-                    :style => 'color: #10152c; text-decoration: none;' %>
+                    :style => 'color: #10152c; text-decoration: none;' do %>
+          <%= digest_issue_text(d_issue, digest.many_projects?) %>
+          <%= content_tag :small, "(#{d_issue.uniq_events.count})" %>
+        <% end %>
         <% if d_issue.changes_event_types.any? %>
           <p style="padding-left: 60px; margin-top: 1px; margin-bottom: 5px; font-size: smaller; opacity: 0.8;">
             <% (d_issue.changes_event_types).map do |event_type| %>

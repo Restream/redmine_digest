@@ -74,7 +74,7 @@ module RedmineDigest
               :last_updated_on => issue.created_on
           )
 
-          if issue.created_on >= time_from && issue.created_on < time_to
+          if include_issue_add_event?(issue)
             event = DigestEvent.new(DigestEvent::ISSUE_CREATED,
                                     issue.id,
                                     issue.created_on,
@@ -87,7 +87,7 @@ module RedmineDigest
           journals.sort_by(&:id).each_with_index { |j, i| j.indice = i + 1 }
 
           journals.each do |journal|
-            next if journal.created_on < time_from || journal.created_on >= time_to
+            next unless include_issue_edit_event?(journal)
 
             events = digest_rule.find_events_by_journal(journal)
 
@@ -115,6 +115,33 @@ module RedmineDigest
       end
 
       d_issues
+    end
+
+    def include_issue_edit_event?(journal)
+      return false if journal.created_on < time_from ||
+                      journal.created_on >= time_to
+
+      skip_digest = digest_rule.notify_only? &&
+          (journal.notify? &&
+              (Setting.notified_events.include?('issue_updated') ||
+                  (Setting.notified_events.include?('issue_note_added') && journal.notes.present?) ||
+                  (Setting.notified_events.include?('issue_status_updated') && journal.new_status.present?) ||
+                  (Setting.notified_events.include?('issue_priority_updated') && journal.new_value_for('priority_id').present?)
+              )) &&
+          (journal.watcher_recipients + journal.recipients).include?(user.mail)
+
+      !skip_digest
+    end
+
+    def include_issue_add_event?(issue)
+      return false if issue.created_on < time_from ||
+                      issue.created_on >= time_to
+
+      skip_digest = digest_rule.notify_only? &&
+          Setting.notified_events.include?('issue_added') &&
+          (issue.watcher_recipients + issue.recipients).include?(user.mail)
+
+      !skip_digest
     end
 
     def wants_created?

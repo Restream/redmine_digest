@@ -14,7 +14,7 @@ en:
   text_digest: "%{recurrent} digest with changes from %{time_from} to %{time_to}"
   text_digest_subject: "[%{recurrent} digest] %{name}"
   text_digest_comments: "Issues grouped by last status"
-  text_notify: "Important note: These rules does not change behaviour of sending notifications about issues where you are assigned to or you are watcher."
+  text_notify: "Important note: These rules does not change behaviour of sending notifications about issues where you are author or watcher or issue assigned to you"
 
   button_digest_preview: "Preview"
 
@@ -36,7 +36,7 @@ en:
 
   notify_options:
     all: "Send notifications about an event (if any) and include it in the digest"
-    notify: "Do not include an event in the digest if a notification were sent"
+    notify: "Do not include an event in the digest if a notification was sent"
     digest: "Do not send notifications about an event if it will be included in digest"
 
   recurrent_types:

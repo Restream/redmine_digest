@@ -21,8 +21,7 @@ class RedmineDigest::IssueTest < ActiveSupport::TestCase
   # #case | skip | in_digest? | assigned_to | watcher? | skip_notification?
   #       |      |            | user?       |          |
   # -----------------------------------------------------------------------
-  #   1     off   *             *             *         no
-  #   2     on    no            *             *         no
+  #   1     x     no            *             *         no
   #   3     on    yes           no            no        yes
   #         on    yes           *             yes       no
   #         on    yes           yes           *         no
@@ -53,20 +52,9 @@ class RedmineDigest::IssueTest < ActiveSupport::TestCase
     assert_include @watcher.mail, @not_involved_issue.recipients
   end
 
-  def test_case_2_skip_on__issue_not_in_digest
-    enable_skip_notifications(@assignee)
-    enable_skip_notifications(@watcher)
-    assert_include @assignee.mail, @assigned_issue.recipients
-    assert_include @watcher.mail, @watched_issue.watcher_recipients
-    assert_include @assignee.mail, @not_involved_issue.recipients
-    assert_include @watcher.mail, @not_involved_issue.recipients
-  end
-
   def test_case_3_skip_on__issue_in_digest
     create_digest_rule(@assignee)
-    enable_skip_notifications(@assignee)
     create_digest_rule(@watcher)
-    enable_skip_notifications(@watcher)
     assert_include @assignee.mail, @assigned_issue.recipients
     assert_include @watcher.mail, @watched_issue.watcher_recipients
     assert_not_include @assignee.mail, @not_involved_issue.recipients
@@ -76,14 +64,10 @@ class RedmineDigest::IssueTest < ActiveSupport::TestCase
   def create_digest_rule(user)
     user.digest_rules.create(
         :name => 'test',
+        :notify => DigestRule::DIGEST_ONLY,
         :recurrent => DigestRule::MONTHLY,
         :project_selector => DigestRule::ALL,
         :event_ids => DigestEvent::TYPES
     )
-  end
-
-  def enable_skip_notifications(user)
-    user.pref.skip_digest_notifications = true
-    user.pref.save!
   end
 end

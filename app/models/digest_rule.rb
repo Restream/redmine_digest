@@ -31,6 +31,8 @@ class DigestRule < ActiveRecord::Base
 
   scope :active,  -> { where('active = ?', true) }
 
+  scope :digest_only, -> { where('notify = ?', DIGEST_ONLY) }
+
   scope :daily,   -> { where(:recurrent => DAILY) }
   scope :weekly,  -> { where(:recurrent => WEEKLY) }
   scope :monthly, -> { where(:recurrent => MONTHLY) }
@@ -104,6 +106,18 @@ class DigestRule < ActiveRecord::Base
     find_events_by_journal(journal).any?
   end
 
+  def notify_and_digest?
+    notify == NOTIFY_AND_DIGEST
+  end
+
+  def notify_only?
+    notify == NOTIFY_ONLY
+  end
+
+  def digest_only?
+    notify == DIGEST_ONLY
+  end
+
   private
 
   def event_for_journal_detail(jdetail)
@@ -147,6 +161,7 @@ class DigestRule < ActiveRecord::Base
   def set_default_values
     self.active = true if active.nil?
     self.project_selector ||= MEMBER
+    self.notify ||= NOTIFY_AND_DIGEST
     self.recurrent ||= WEEKLY
     self.event_ids ||= DigestEvent::TYPES.dup
   end

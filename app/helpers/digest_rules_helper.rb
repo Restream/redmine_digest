@@ -28,16 +28,16 @@ module DigestRulesHelper
     result
   end
 
+  def notify_options_for_select
+    DigestRule::NOTIFY_OPTIONS.map do |v|
+      [ l(v, :scope => 'notify_options'), v ]
+    end
+  end
+
   def recurrent_options_for_select
     DigestRule::RECURRENT_TYPES.map do |v|
       [ l(v, :scope => 'recurrent_types'), v ]
     end
-  end
-
-  def find_select2_js_locale(lang)
-    url = "select2/select2_locale_#{lang}"
-    file_path = File.join(Rails.root, "/plugin_assets/redmine_digest/#{url}")
-    url if File.exists?(file_path)
   end
 
   def event_type_id(event_type)

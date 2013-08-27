@@ -6,6 +6,11 @@ class DigestRule < ActiveRecord::Base
   MEMBER_NOT_SELECTED = 'member_not_selected'
   PROJECT_SELECTOR_VALUES = [ALL, SELECTED, NOT_SELECTED, MEMBER, MEMBER_NOT_SELECTED]
 
+  NOTIFY_AND_DIGEST = 'all'
+  NOTIFY_ONLY = 'notify'
+  DIGEST_ONLY = 'digest'
+  NOTIFY_OPTIONS = [NOTIFY_AND_DIGEST, NOTIFY_ONLY, DIGEST_ONLY]
+
   DAILY = 'daily'
   WEEKLY = 'weekly'
   MONTHLY = 'monthly'
@@ -17,10 +22,11 @@ class DigestRule < ActiveRecord::Base
   serialize :event_ids
 
   attr_accessible :active, :name, :raw_project_ids, :project_selector,
-                  :recurrent, :event_ids, :move_to
+                  :notify, :recurrent, :event_ids, :move_to
 
   validates :name, :presence => true
   validates :project_selector, :inclusion => { :in => PROJECT_SELECTOR_VALUES }
+  validates :notify, :inclusion => { :in => NOTIFY_OPTIONS }
   validates :recurrent, :inclusion => { :in => RECURRENT_TYPES }
 
   scope :active,  -> { where('active = ?', true) }

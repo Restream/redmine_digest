@@ -9,14 +9,9 @@ $(document).ready(function() {
     }
   };
 
-  $("#digest_rule_recurrent").select2({
-    width: "20%",
-    allowClear: false
-  });
-
   $("#digest_rule_project_selector").select2({
     width: "40%",
-    allowClear: false    
+    allowClear: false
   }).on("change", toggleProjectList);
 
   $("#digest_rule_raw_project_ids").select2({

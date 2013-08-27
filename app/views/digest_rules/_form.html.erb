@@ -11,6 +11,13 @@
     <%= f.text_field :name %>
   </p>
 
+  <p>
+    <%= f.select :notify, notify_options_for_select %>
+  </p>
+  <p>
+    <%= l(:text_notify) %>
+  </p>
+
   <p class="select2-field">
     <%= f.select :recurrent, recurrent_options_for_select %>
   </p>

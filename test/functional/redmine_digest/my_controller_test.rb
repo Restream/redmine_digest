@@ -13,11 +13,4 @@ class RedmineDigest::MyControllerTest < ActionController::TestCase
     @request.session[:user_id] = @user.id
   end
 
-  def test_skip_digest_notification_shown
-    get :account
-    assert_response :success
-    assert_tag :input,
-               :attributes => { :name => 'pref[skip_digest_notifications]' }
-  end
-
 end

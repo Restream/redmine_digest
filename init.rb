@@ -11,10 +11,11 @@ Redmine::Plugin.register :redmine_digest do
   name        'RedmineDigest plugin'
   description 'Send daily/weekly/monthly digest'
   author      'Danil Tashkinov'
-  version     '1.0.3'
+  version     '1.0.4'
   url         'https://github.com/Undev/redmine_digest'
 
   requires_redmine :version_or_higher => '2.1'
+  requires_redmine_plugin :redmine_select2, :version_or_higher => '0.0.3'
 
   permission :manage_digest_rules, { :digest_rules => [:new, :create, :edit, :update] },
              :public => true,

@@ -79,7 +79,7 @@ module RedmineDigest
             event = DigestEvent.new(DigestEvent::ISSUE_CREATED,
                                     issue.id,
                                     issue.created_on,
-                                    issue.author.to_s)
+                                    issue.author)
             d_issue.events[DigestEvent::ISSUE_CREATED] << event
           end
 
@@ -152,10 +152,9 @@ module RedmineDigest
     def get_sorted_digest_issues
       result = ActiveSupport::OrderedHash.new
       IssueStatus.sorted.each do |status|
-        iss = issues.
+        result[status] = issues.
             find_all { |i| i.status_id.to_i == status.id }.
-            sort_by(&:sort_key)
-        result[status] = iss
+            sort{ |a, b| b.sort_key <=> a.sort_key }
       end
       result
     end

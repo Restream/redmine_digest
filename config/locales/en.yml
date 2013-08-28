@@ -15,6 +15,8 @@ en:
   text_digest_subject: "[%{recurrent} digest] %{name}"
   text_digest_comments: "Issues grouped by last status"
   text_notify: "Important note: These rules does not change behaviour of sending notifications about issues where you are author or watcher or issue assigned to you"
+  text_new_issues: "New issues"
+  text_changed_issues: "Changed issues"
 
   button_digest_preview: "Preview"
 

@@ -15,50 +15,40 @@
   </h3>
 <% end %>
 
-<em><%= l(:text_digest_comments) %></em>
-
-<% digest.sorted_digest_issues.each do |status, digest_issues| %>
-  <% next if digest_issues.empty? %>
-
-  <h3 style="color: #555; font-family: 'Trebuchet MS', Verdana, sans-serif; padding: 2px 10px 1px 0; margin: 0 0 10px 0; font-size: 1.2em;">
-    <%=	status %>
-  </h3>
-
-  <ul style="list-style-type: none; padding-left: 20px;">
-    <% digest_issues.each do |d_issue| %>
-
-      <%= content_tag :li do %>
-        <span style="font-size: smaller; font-weight: bold; width: 1em; float: left; color: green;">
-          <%= d_issue.new_issue? ? '+' : '&nbsp;'.html_safe %>
-        </span>
-        <%= link_to digest_issue_url(d_issue),
-                    :title => digest_issue_title(d_issue),
-                    :style => 'color: #10152c; text-decoration: none;' do %>
-          <%= digest_issue_text(d_issue, digest.many_projects?) %>
-          <%= content_tag :small, "(#{d_issue.uniq_events.count})" %>
-        <% end %>
-        <% if d_issue.changes_event_types.any? %>
-          <p style="padding-left: 60px; margin-top: 1px; margin-bottom: 5px; font-size: smaller; opacity: 0.8;">
-            <% (d_issue.changes_event_types).map do |event_type| %>
-              <% if (event = d_issue.events[event_type].last) %>
-                <span style="margin-left: 3px; background-color: <%= event_type_color(event_type) %>">
-                  <%= link_to event.formatted_value,
-                          {
-                              :host => Setting.host_name,
-                              :protocol => Setting.protocol,
-                              :controller => 'issues',
-                              :action => 'show',
-                              :id => event.issue_id,
-                              :anchor => "note-#{event.indice}"
-                          },
-                          :title => d_issue.events_summary(event_type),
-                          :style => 'color: #10152c; text-decoration: none;' %>
-                </span>
-              <% end %>
-            <% end %>
-          </p>
-        <% end %>
-      <% end %>
-    <% end %>
-  </ul>
+<h2 style="color: #555; font-family: 'Trebuchet MS', Verdana, sans-serif; padding: 2px 10px 1px 0; margin: 20px 0 3px 20px; font-size: 1.4em;">
+  <%= l(:text_new_issues) %>
+</h2>
+<div style="margin: 0 0 0 20px;">
+  <% digest.sorted_digest_issues.each do |status, digest_issues| %>
+    <% new_digest_issues = digest_issues.find_all { |i| i.new_issue? } %>
+    <% next if new_digest_issues.empty? %>
+    <div style="float:left; margin:0; width:8em; border-top: 2px solid #cecece; font-size: 1.2em">
+        <%=	status %>
+    </div>
+    <div style="float:left; margin:0; width:80%; border-top: 2px solid #cecece;">
+      <%= render 'digest_issues',
+                 :digest => digest,
+                 :digest_issues => new_digest_issues %>
+    </div>
+    <div style="clear:both"></div>
 <% end %>
+</div>
+
+<h2 style="color: #555; font-family: 'Trebuchet MS', Verdana, sans-serif; padding: 2px 10px 1px 0; margin: 20px 0 3px 20px; font-size: 1.4em;">
+  <%= l(:text_changed_issues) %>
+</h2>
+<div style="margin: 0 0 0 20px;">
+  <% digest.sorted_digest_issues.each do |status, digest_issues| %>
+    <% new_digest_issues = digest_issues.find_all { |i| !i.new_issue? } %>
+    <% next if new_digest_issues.empty? %>
+    <div style="float:left; margin:0; width:8em; border-top: 2px solid #cecece; font-size: 1.2em">
+        <%=	status %>
+    </div>
+    <div style="float:left; margin:0; width:80%; border-top: 2px solid #cecece;">
+      <%= render 'digest_issues',
+                 :digest => digest,
+                 :digest_issues => new_digest_issues %>
+    </div>
+    <div style="clear:both"></div>
+<% end %>
+</div>

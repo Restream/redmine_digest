@@ -1,0 +1,8 @@
+<%= link_to digest_issue_url(d_issue),
+            :title => digest_issue_title(d_issue),
+            :style => 'color: #10152c; text-decoration: none;' do %>
+  <%= digest_issue_text(d_issue, digest.many_projects?) %>
+<% end %>
+<% if d_issue.changes_event_types.any? %>
+  <%= render 'digest_issue_events', :digest => digest, :d_issue => d_issue %>
+<% end %>

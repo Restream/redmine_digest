@@ -82,7 +82,7 @@ class DigestRule < ActiveRecord::Base
 
     issue_id = journal.issue.id
     created_on = journal.created_on
-    user = journal.user.to_s
+    user = journal.user
 
     if journal.notes.present? && event_type_enabled?(DigestEvent::COMMENT_ADDED)
       events << DigestEvent.new(
@@ -90,7 +90,7 @@ class DigestRule < ActiveRecord::Base
     end
 
     journal.details.each do |jdetail|
-      event = event_for_journal_detail(jdetail)
+      event = event_for_journal_detail(journal, jdetail)
       events << event if event && event_type_enabled?(event.event_type)
     end
 
@@ -120,11 +120,10 @@ class DigestRule < ActiveRecord::Base
 
   private
 
-  def event_for_journal_detail(jdetail)
-    journal = jdetail.journal
+  def event_for_journal_detail(journal, jdetail)
     issue_id = journal.journalized_id
     created_on = journal.created_on
-    user = journal.user.to_s
+    user = journal.user
 
     if jdetail.property == 'attr' && DigestEvent::PROP_KEYS.has_key?(jdetail.prop_key)
       event_type = DigestEvent::PROP_KEYS[jdetail.prop_key]

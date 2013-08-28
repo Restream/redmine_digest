@@ -1,0 +1,7 @@
+<ul style="list-style-type: none; padding: 0; margin: 3px">
+  <% digest_issues.each do |d_issue| %>
+    <%= content_tag :li do %>
+      <%=	render 'digest_issue', :digest => digest, :d_issue => d_issue %>
+    <% end %>
+  <% end %>
+</ul>

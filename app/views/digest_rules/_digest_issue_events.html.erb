@@ -1,14 +1,14 @@
 <% d_issue.changes_event_types.each do |event_type| %>
   <% last_user_id = nil %>
-  <div style="padding: 0 0 0 30px;">
-    <div style="float:left; margin:2px; width:10em; font-size: 0.7em; text-align: right;">
+  <div style="padding: 0 0 0 30px; vertical-align: top;">
+    <div style="display: inline-block; margin:2px; width:10em; font-size: 0.7em; text-align: right; vertical-align: top;">
       <%= l(event_type, :scope => 'event_types') %>
     </div>
-    <div style="float:left; margin:2px; border-left: 1px solid #e0e0e0; font-size:0.8em;">
+    <div style="display: inline-block; margin:2px; border-left: 1px solid #e0e0e0; font-size:0.8em; white-space: nowrap; vertical-align: top;">
       <ul style="list-style-type: none; padding: 0; margin: 3px">
         <% d_issue.events[event_type].each do |event| %>
           <li>
-            <div style="float: left; min-width: 10em; text-align: center;">
+            <div style="display: inline-block; min-width: 10em; text-align: center; vertical-align: top;">
               <% if last_user_id == event.user.id %>
                 &nbsp;
               <% else %>
@@ -24,10 +24,10 @@
               <% end %>
               <% last_user_id = event.user.id %>
             </div>
-            <div style="float: left; margin-left: 5px;">
+            <div style="display: inline-block; margin-left: 5px; vertical-align: top;">
                <%= format_time(event.created_on, digest.recurrent != DigestRule::DAILY) %>
             </div>
-            <div style="float: left; margin-left: 5px;">
+            <div style="display: inline-block; margin-left: 5px; vertical-align: top;">
               <span style="margin-left: 3px;">
                 <% if event_type == DigestEvent::OTHER_ATTR_CHANGED %>
                   <%= event.field_label %>:&nbsp;

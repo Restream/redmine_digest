@@ -3,7 +3,7 @@ require File.expand_path('../../../test_helper', __FILE__)
 class RedmineDigest::DigestTest < ActiveSupport::TestCase
   fixtures :users, :user_preferences, :roles, :projects, :members, :member_roles,
            :issues, :issue_statuses, :trackers, :journals, :journal_details,
-           :enabled_modules
+           :enabled_modules, :enumerations
 
   def setup
     @user = User.find(1)

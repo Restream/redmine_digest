@@ -8,5 +8,7 @@
   </td>
 </tr>
 <% if d_issue.changes_event_types.any? %>
-  <%= render 'digest_issue_events', :digest => digest, :d_issue => d_issue %>
+  <%= render digest.template_path('digest_issue_events'),
+             :digest => digest,
+             :d_issue => d_issue %>
 <% end %>

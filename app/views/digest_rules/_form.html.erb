@@ -31,6 +31,10 @@
                        :data => { :options => project_ids_options_for_select } %>
   </p>
 
+  <p>
+    <%= f.select :template, templates_for_select %>
+  </p>
+
   <fieldset>
     <legend><%=	l(:text_event_types) %></legend>
     <%= hidden_field_tag 'event_ids[]', [] %>

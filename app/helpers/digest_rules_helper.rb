@@ -40,6 +40,12 @@ module DigestRulesHelper
     end
   end
 
+  def templates_for_select
+    DigestRule::TEMPLATES.map do |v|
+      [ l(v, :scope => 'digest_template'), v ]
+    end
+  end
+
   def event_type_id(event_type)
     "digest_rule_event_type_#{event_type}"
   end
@@ -78,7 +84,10 @@ module DigestRulesHelper
       when DigestEvent::ASSIGNEE_CHANGED then '#fbe3ff'
       when DigestEvent::VERSION_CHANGED then '#ffe1e3'
       when DigestEvent::PROJECT_CHANGED then '#fffcde'
+      when DigestEvent::SUBJECT_CHANGED then '#FF8E8E'
+      when DigestEvent::OTHER_ATTR_CHANGED then '#E7E9E6'
       when DigestEvent::COMMENT_ADDED then '#e0ffe1'
+      when DigestEvent::ATTACHMENT_ADDED then '#DFF3FF'
       when DigestEvent::ISSUE_CREATED then '#e1ffe3'
       else 'gray'
     end

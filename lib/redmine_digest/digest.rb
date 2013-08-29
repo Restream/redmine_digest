@@ -48,6 +48,10 @@ module RedmineDigest
       @projects_names ||= issues.map(&:project_name).uniq
     end
 
+    def template_path(partial = 'digest')
+      "digests/#{digest_rule.template}/#{partial}"
+    end
+
     private
 
     def fetch_issues

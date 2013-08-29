@@ -9,6 +9,7 @@ en:
   field_project_selector: "Projects"
   field_notify: "Notifications"
   field_recurrent: "Recurrent"
+  field_template: "Digest template"
 
   text_event_types: "Select event types which should be included in digest"
   text_digest: "%{recurrent} digest with changes from %{time_from} to %{time_to}"
@@ -57,3 +58,7 @@ en:
     project_changed: "Project changed"
     subject_changed: "Subject changed"
     other_attr_changed: "Other changes"
+
+  digest_template:
+    short: "Short"
+    detail: "Detail"

@@ -16,18 +16,23 @@ class DigestRule < ActiveRecord::Base
   MONTHLY = 'monthly'
   RECURRENT_TYPES = [DAILY, WEEKLY, MONTHLY]
 
+  TEMPLATE_SHORT = 'short'
+  TEMPLATE_DETAIL = 'detail'
+  TEMPLATES = [TEMPLATE_SHORT, TEMPLATE_DETAIL]
+
   belongs_to :user
 
   serialize :project_ids, Array
   serialize :event_ids
 
   attr_accessible :active, :name, :raw_project_ids, :project_selector,
-                  :notify, :recurrent, :event_ids, :move_to
+                  :notify, :recurrent, :event_ids, :move_to, :template
 
   validates :name, :presence => true
   validates :project_selector, :inclusion => { :in => PROJECT_SELECTOR_VALUES }
   validates :notify, :inclusion => { :in => NOTIFY_OPTIONS }
   validates :recurrent, :inclusion => { :in => RECURRENT_TYPES }
+  validates :template, :inclusion => { :in => TEMPLATES }
 
   scope :active,  -> { where('active = ?', true) }
 
@@ -163,5 +168,6 @@ class DigestRule < ActiveRecord::Base
     self.notify ||= NOTIFY_AND_DIGEST
     self.recurrent ||= WEEKLY
     self.event_ids ||= DigestEvent::TYPES.dup
+    self.template ||= TEMPLATE_SHORT
   end
 end

@@ -16,12 +16,12 @@
 <% end %>
 
 <div style="font-family: 'Trebuchet MS', Verdana, sans-serif;">
-  <%= render 'digest_issues',
+  <%= render digest.template_path('digest_issues'),
              :digest => digest,
              :collection_label => l(:text_new_issues),
              :collection_filter => lambda { |issue| issue.new_issue? } %>
 
-  <%= render 'digest_issues',
+  <%= render digest.template_path('digest_issues'),
              :digest => digest,
              :collection_label => l(:text_changed_issues),
              :collection_filter => lambda { |issue| !issue.new_issue? } %>

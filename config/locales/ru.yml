@@ -9,7 +9,7 @@ ru:
   field_project_selector: "Проекты"
   field_notify: "Уведомления"
   field_recurrent: "Периодичность"
-  field_skip_digest_notifications: "Не уведомлять об изменениях которые попадут в дайджест (кроме объектов, которые я отслеживаю или в которых участвую)"
+  field_template: "Шаблон дайджеста"
 
   text_event_types: "Выберите события для включения в дайджест"
   text_digest: "%{recurrent} дайджест с изменениями от %{time_from} до %{time_to}"
@@ -58,3 +58,7 @@ ru:
     project_changed: "Изменился проект"
     subject_changed: "Изменилась тема"
     other_attr_changed: "Другие изменения"
+
+  digest_template:
+    short: "Краткий"
+    detail: "Детальный"

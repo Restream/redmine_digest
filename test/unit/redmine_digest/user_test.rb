@@ -21,32 +21,32 @@ class RedmineDigest::UserTest < ActiveSupport::TestCase
 
   def test_skip_notify_if_option_digest
     create_rule DigestRule::DIGEST_ONLY
-    assert_true @user.skip_issue_add_notify?(@issue)
+    assert_equal true, @user.skip_issue_add_notify?(@issue)
   end
 
   def test_do_not_skip_notify_if_option_all
     create_rule DigestRule::NOTIFY_AND_DIGEST
-    assert_false @user.skip_issue_add_notify?(@issue)
+    assert_equal false, @user.skip_issue_add_notify?(@issue)
   end
 
   def test_do_not_skip_notify_if_option_notify
     create_rule DigestRule::NOTIFY_ONLY
-    assert_false @user.skip_issue_add_notify?(@issue)
+    assert_equal false, @user.skip_issue_add_notify?(@issue)
   end
 
   def test_skip_edit_notify_if_option_digest
     create_rule DigestRule::DIGEST_ONLY
-    assert_true @user.skip_issue_edit_notify?(@journal)
+    assert_equal true, @user.skip_issue_edit_notify?(@journal)
   end
 
   def test_do_not_skip_edit_notify_if_option_all
     create_rule DigestRule::NOTIFY_AND_DIGEST
-    assert_false @user.skip_issue_edit_notify?(@journal)
+    assert_equal false, @user.skip_issue_edit_notify?(@journal)
   end
 
   def test_do_not_skip_edit_notify_if_option_notify
     create_rule DigestRule::NOTIFY_ONLY
-    assert_false @user.skip_issue_edit_notify?(@journal)
+    assert_equal false, @user.skip_issue_edit_notify?(@journal)
   end
 
   def create_rule(notify_option)

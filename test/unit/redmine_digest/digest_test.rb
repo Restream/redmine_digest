@@ -174,6 +174,6 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
     time_to = Journal.last.created_on + 1.hour
     digest = RedmineDigest::Digest.new(rule, time_to)
     assert_equal 3, digest.projects_count
-    assert_true digest.many_projects?
+    assert_equal true, digest.many_projects?
   end
 end

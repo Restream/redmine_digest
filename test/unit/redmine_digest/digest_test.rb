@@ -129,7 +129,7 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
   def test_time_zone
     Time.use_zone('UTC') do
       # leave only ane issue at midnight UTC
-      Issue.update_all(:created_on => 1.year.ago)
+      Issue.delete_all('id <> 1')
       Issue.find(1).update_attribute :created_on, Date.current.midnight
     end
 
@@ -153,6 +153,7 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
     user.pref.time_zone = time_zone
     user.pref.save!
     user = User.find(2) # because time_zone is caching
+    ActiveRecord::Base.connection.schema_cache.clear!
     rule = user.digest_rules.create(
         :name => 'test',
         :recurrent => DigestRule::DAILY,

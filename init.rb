@@ -15,7 +15,7 @@ Redmine::Plugin.register :redmine_digest do
   url         'https://github.com/Undev/redmine_digest'
 
   requires_redmine :version_or_higher => '2.1'
-  requires_redmine_plugin :redmine_select2, :version_or_higher => '0.0.3'
+  requires_redmine_plugin :redmine__select2, :version_or_higher => '1.0.1'
 
   permission :manage_digest_rules, { :digest_rules => [:new, :create, :edit, :update] },
              :public => true,

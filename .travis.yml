@@ -41,7 +41,7 @@ before_install:
   - ln -s $TRAVIS_BUILD_DIR $REDMINE_PATH/plugins/$PLUGIN_NAME
   - cp config/database-$DB-travis.yml $REDMINE_PATH/config/database.yml
   - cd $REDMINE_PATH
-  - git clone --depth=1 https://github.com/Undev/redmine_select2.git $REDMINE_PATH/plugins/redmine_select2
+  - git clone --depth=1 https://github.com/Undev/redmine__select2.git $REDMINE_PATH/plugins/redmine__select2
 
 before_script:
   - rake db:create

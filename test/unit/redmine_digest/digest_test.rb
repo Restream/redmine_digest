@@ -133,7 +133,7 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
       Issue.find(1).update_attribute :created_on, Date.current.midnight
     end
 
-    issue_ids = get_digest_issues_with_time_zone 'Azores' # UTC -01:00
+    issue_ids = get_digest_issues_with_time_zone 'Eastern Time (US & Canada)' # UTC -05:00
     assert_equal [], issue_ids, 'Should not see update at midnight UTC'
   end
 

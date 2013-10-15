@@ -133,8 +133,9 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
       Issue.find(1).update_attribute :created_on, Date.current.midnight
     end
 
+    # for this time zone change was yesterday in 19:00 UTC-05:00
     issue_ids = get_digest_issues_with_time_zone 'Eastern Time (US & Canada)' # UTC -05:00
-    assert_equal [], issue_ids, 'Should not see update at midnight UTC'
+    assert_equal [1], issue_ids, 'Should see update at midnight UTC in Eastern Time time zone'
   end
 
   def test_time_zone2
@@ -144,8 +145,9 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
       Issue.find(1).update_attribute :created_on, Date.current.midnight
     end
 
+    # for this time zone change will be tomorrow in 04:00 UTC+04:00
     issue_ids = get_digest_issues_with_time_zone 'Moscow' # UTC +04:00
-    assert_equal [1], issue_ids, 'Should see update at midnight UTC'
+    assert_equal [], issue_ids, 'Should not see update at midnight UTC in Moscow time zone'
   end
 
   def get_digest_issues_with_time_zone(time_zone)
@@ -158,7 +160,7 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
         :name => 'test',
         :recurrent => DigestRule::DAILY,
         :project_selector => DigestRule::ALL,
-        :event_ids => DigestEvent::TYPES
+        :event_ids => [DigestEvent::ISSUE_CREATED]
     )
     digest = RedmineDigest::Digest.new(rule)
     digest.issues.map(&:id)

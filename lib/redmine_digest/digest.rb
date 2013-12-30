@@ -123,8 +123,7 @@ module RedmineDigest
     end
 
     def include_issue_edit_event?(journal)
-      return false if journal.created_on < time_from ||
-                      journal.created_on >= time_to
+      return false unless in_time_frame?(journal.created_on)
 
       skip_digest = digest_rule.notify_only? &&
           (journal.notify? &&
@@ -139,14 +138,17 @@ module RedmineDigest
     end
 
     def include_issue_add_event?(issue)
-      return false if issue.created_on < time_from ||
-                      issue.created_on >= time_to
+      return false unless in_time_frame?(issue.created_on)
 
       skip_digest = digest_rule.notify_only? &&
           Setting.notified_events.include?('issue_added') &&
           (issue.watcher_recipients + issue.recipients).include?(user.mail)
 
       !skip_digest
+    end
+
+    def in_time_frame?(datetime)
+      datetime >= time_from && datetime < time_to
     end
 
     def wants_created?

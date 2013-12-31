@@ -50,7 +50,7 @@ class DigestIssue < Hashie::Dash
   end
 
   def sort_key
-    priority.position * 1000 + uniq_events.count
+    (priority.try(:position) || 0) * 1000 + uniq_events.count
   end
 
   def uniq_events

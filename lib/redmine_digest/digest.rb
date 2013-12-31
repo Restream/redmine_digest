@@ -124,17 +124,22 @@ module RedmineDigest
 
     def include_issue_edit_event?(journal)
       return false unless in_time_frame?(journal.created_on)
+      !(digest_rule.notify_only? && user_will_be_notified?(journal))
+    end
 
-      skip_digest = digest_rule.notify_only? &&
-          (journal.notify? &&
-              (Setting.notified_events.include?('issue_updated') ||
-                  (Setting.notified_events.include?('issue_note_added') && journal.notes.present?) ||
-                  (Setting.notified_events.include?('issue_status_updated') && journal.new_status.present?) ||
-                  (Setting.notified_events.include?('issue_priority_updated') && journal.new_value_for('priority_id').present?)
-              )) &&
-          (journal.watcher_recipients + journal.recipients).include?(user.mail)
+    def user_will_be_notified?(journal)
+      journal.notify? && notified_events?(journal) && user_in_recipients?(journal)
+    end
 
-      !skip_digest
+    def user_in_recipients?(issue_or_journal)
+      (issue_or_journal.watcher_recipients + issue_or_journal.recipients).include?(user.mail)
+    end
+
+    def notified_events?(journal)
+      Setting.notified_events.include?('issue_updated') ||
+          (Setting.notified_events.include?('issue_note_added') && journal.notes.present?) ||
+          (Setting.notified_events.include?('issue_status_updated') && journal.new_status.present?) ||
+          (Setting.notified_events.include?('issue_priority_updated') && journal.new_value_for('priority_id').present?)
     end
 
     def include_issue_add_event?(issue)
@@ -142,7 +147,7 @@ module RedmineDigest
 
       skip_digest = digest_rule.notify_only? &&
           Setting.notified_events.include?('issue_added') &&
-          (issue.watcher_recipients + issue.recipients).include?(user.mail)
+          user_in_recipients?(issue)
 
       !skip_digest
     end

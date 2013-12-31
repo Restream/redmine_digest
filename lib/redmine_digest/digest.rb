@@ -57,69 +57,68 @@ module RedmineDigest
     def fetch_issues
       raise 'DigestRule#user must be filled' if user.nil?
 
+      d_issues = []
+
+      fetch_issue_ids.in_groups_of(ISSUE_BATCH_SIZE) do |issue_ids|
+        get_issues_scope(issue_ids.compact).each do |issue|
+          d_issue = get_digest_issue_with_events(issue)
+          d_issues << d_issue if wants_created? ? d_issue.any_events? : d_issue.any_changes_events?
+        end
+      end
+
+      d_issues
+    end
+
+    def get_digest_issue_with_events(issue)
+      d_issue = DigestIssue.new(
+          :id => issue.id,
+          :subject => issue.subject,
+          :status_id => issue.status_id,
+          :project_id => issue.project_id,
+          :project_name => issue.project.name,
+          :created_on => issue.created_on,
+          :last_updated_on => issue.created_on,
+          :priority => issue.priority
+      )
+
+      if include_issue_add_event?(issue)
+        event = DigestEvent.new(DigestEvent::ISSUE_CREATED,
+                                issue.id,
+                                issue.created_on,
+                                issue.author)
+        d_issue.events[DigestEvent::ISSUE_CREATED] << event
+      end
+
+      # read all journal updates, add indice and remove private_notes
+      journals = issue.journals
+      journals.sort_by(&:id).each_with_index { |j, i| j.indice = i + 1 }
+
+      journals.each do |journal|
+        next unless include_issue_edit_event?(journal)
+
+        events = digest_rule.find_events_by_journal(journal)
+
+        # get status_id from change history
+        status_id_change = events.detect { |e| e.event_type == DigestEvent::STATUS_CHANGED }
+        d_issue.status_id = status_id_change.value if status_id_change
+
+        next if journal.private_notes? &&
+            !user.allowed_to?(:view_private_notes, issue.project)
+
+        events.each do |event|
+          d_issue.last_updated_on = journal.created_on
+          d_issue.events[event.event_type] << event
+        end
+      end
+      d_issue
+    end
+
+    def fetch_issue_ids
       all_issue_ids = get_changed_issue_ids
       all_issue_ids += get_created_issue_ids if wants_created?
       all_issue_ids.uniq!
       all_issue_ids = all_issue_ids.take(@issue_limit) if @issue_limit
-
-      d_issues = []
-
-      all_issue_ids.in_groups_of(ISSUE_BATCH_SIZE) do |issue_ids|
-
-        get_issues_scope(issue_ids.compact).each do |issue|
-
-          d_issue = DigestIssue.new(
-              :id => issue.id,
-              :subject => issue.subject,
-              :status_id => issue.status_id,
-              :project_id => issue.project_id,
-              :project_name => issue.project.name,
-              :created_on => issue.created_on,
-              :last_updated_on => issue.created_on,
-              :priority => issue.priority
-          )
-
-          if include_issue_add_event?(issue)
-            event = DigestEvent.new(DigestEvent::ISSUE_CREATED,
-                                    issue.id,
-                                    issue.created_on,
-                                    issue.author)
-            d_issue.events[DigestEvent::ISSUE_CREATED] << event
-          end
-
-          # read all journal updates, add indice and remove private_notes
-          journals = issue.journals
-          journals.sort_by(&:id).each_with_index { |j, i| j.indice = i + 1 }
-
-          journals.each do |journal|
-            next unless include_issue_edit_event?(journal)
-
-            events = digest_rule.find_events_by_journal(journal)
-
-            # get status_id from change history
-            status_id_change = events.detect{ |e| e.event_type == DigestEvent::STATUS_CHANGED }
-            d_issue.status_id = status_id_change.value if status_id_change
-
-            next if journal.private_notes? &&
-                    !user.allowed_to?(:view_private_notes, issue.project)
-
-            events.each do |event|
-              d_issue.last_updated_on = journal.created_on
-              d_issue.events[event.event_type] << event
-            end
-          end
-
-          if wants_created?
-            d_issues << d_issue if d_issue.any_events?
-          else
-            d_issues << d_issue if d_issue.any_changes_events?
-          end
-
-        end
-
-      end
-
-      d_issues
+      all_issue_ids
     end
 
     def include_issue_edit_event?(journal)

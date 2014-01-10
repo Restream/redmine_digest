@@ -60,9 +60,23 @@ class DigestRulesControllerTest < ActionController::TestCase
     assert_nil digest_rule
   end
 
-  def test_show_preview
+  def test_show_preview_short
+    preview_template(DigestRule::TEMPLATE_SHORT)
+  end
+
+  def test_show_preview_detail
+    preview_template(DigestRule::TEMPLATE_DETAIL)
+  end
+
+  def test_show_preview_timeline
+    preview_template(DigestRule::TEMPLATE_TIMELINE)
+  end
+
+  def preview_template(template)
+    @digest_rule.template = template
+    @digest_rule.save!
     get :show, :id => @digest_rule.id
-    assert_response :success
+    assert_response :success, "Template #{template} should open successfully"
   end
 
 end

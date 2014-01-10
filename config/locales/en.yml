@@ -62,3 +62,4 @@ en:
   digest_template:
     short: "Short"
     detail: "Detail"
+    timeline: "Detail (by time)"

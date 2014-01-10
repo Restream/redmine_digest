@@ -18,7 +18,8 @@ class DigestRule < ActiveRecord::Base
 
   TEMPLATE_SHORT = 'short'
   TEMPLATE_DETAIL = 'detail'
-  TEMPLATES = [TEMPLATE_SHORT, TEMPLATE_DETAIL]
+  TEMPLATE_TIMELINE = 'timeline'
+  TEMPLATES = [TEMPLATE_SHORT, TEMPLATE_DETAIL, TEMPLATE_TIMELINE]
 
   belongs_to :user
 

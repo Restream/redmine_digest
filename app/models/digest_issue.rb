@@ -56,4 +56,8 @@ class DigestIssue < Hashie::Dash
   def uniq_events
     events.values.flatten.compact.uniq
   end
+
+  def changes
+    # only 'issue change' events
+  end
 end

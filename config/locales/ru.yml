@@ -62,3 +62,4 @@ ru:
   digest_template:
     short: "Краткий"
     detail: "Детальный"
+    timeline: "Детальный (хронологически)"

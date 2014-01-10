@@ -61,5 +61,5 @@ en:
 
   digest_template:
     short: "Short"
-    detail: "Detail"
-    timeline: "Detail (by time)"
+    detail: "Detail (events grouped by type)"
+    timeline: "Detail (events grouped by time)"

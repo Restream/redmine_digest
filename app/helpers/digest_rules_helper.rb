@@ -92,4 +92,9 @@ module DigestRulesHelper
       else 'gray'
     end
   end
+
+  def digest_issue_changes_timeline(digest_issue)
+    all_changes = digest_issue.changes.sort { |a, b| a.created_on <=> b.created_on }
+    all_changes.group_by(&:created_on)
+  end
 end

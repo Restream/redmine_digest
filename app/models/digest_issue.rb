@@ -58,6 +58,6 @@ class DigestIssue < Hashie::Dash
   end
 
   def changes
-    # only 'issue change' events
+    uniq_events.find_all { |event| event.event_type != DigestEvent::ISSUE_CREATED }
   end
 end

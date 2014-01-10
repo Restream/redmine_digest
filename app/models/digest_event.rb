@@ -10,9 +10,17 @@ class DigestEvent
   SUBJECT_CHANGED    = :subject_changed
   OTHER_ATTR_CHANGED = :other_attr_changed
 
-  TYPES = [ISSUE_CREATED, COMMENT_ADDED, ATTACHMENT_ADDED,
-           STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED, VERSION_CHANGED,
-           PROJECT_CHANGED, SUBJECT_CHANGED, OTHER_ATTR_CHANGED]
+  # order is matter. it is used in sorting
+  TYPES = [ISSUE_CREATED,
+           PROJECT_CHANGED,
+           SUBJECT_CHANGED,
+           ASSIGNEE_CHANGED,
+           STATUS_CHANGED,
+           PERCENT_CHANGED,
+           VERSION_CHANGED,
+           OTHER_ATTR_CHANGED,
+           ATTACHMENT_ADDED,
+           COMMENT_ADDED]
 
   PROP_KEYS = {
       'status_id'        => STATUS_CHANGED,
@@ -27,6 +35,7 @@ class DigestEvent
   NOTES_LENGTH = 300
 
   include Redmine::I18n
+  include Comparable
 
   attr_reader :event_type, :issue_id, :created_on, :user, :journal, :journal_detail
 
@@ -88,6 +97,10 @@ class DigestEvent
       else
         nil
     end
+  end
+
+  def <=>(other)
+    TYPES.index(event_type) <=> TYPES.index(other.event_type)
   end
 
   private

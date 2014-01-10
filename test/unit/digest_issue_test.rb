@@ -20,7 +20,7 @@ class DigestIssueTest < ActiveSupport::TestCase
   end
 
   def test_changes
-    #changes = @digest_issue.changes
-    #assert 4, changes.count
+    changes = @digest_issue.changes
+    assert_equal 4, changes.count
   end
 end

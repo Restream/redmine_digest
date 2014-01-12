@@ -1,14 +1,15 @@
 class DigestEvent
-  ISSUE_CREATED      = :issue_created
-  COMMENT_ADDED      = :comment_added
-  ATTACHMENT_ADDED   = :attachment_added
-  STATUS_CHANGED     = :status_changed
-  PERCENT_CHANGED    = :percent_changed
-  ASSIGNEE_CHANGED   = :assignee_changed
-  VERSION_CHANGED    = :version_changed
-  PROJECT_CHANGED    = :project_changed
-  SUBJECT_CHANGED    = :subject_changed
-  OTHER_ATTR_CHANGED = :other_attr_changed
+  ISSUE_CREATED       = :issue_created
+  COMMENT_ADDED       = :comment_added
+  ATTACHMENT_ADDED    = :attachment_added
+  STATUS_CHANGED      = :status_changed
+  PERCENT_CHANGED     = :percent_changed
+  ASSIGNEE_CHANGED    = :assignee_changed
+  VERSION_CHANGED     = :version_changed
+  PROJECT_CHANGED     = :project_changed
+  SUBJECT_CHANGED     = :subject_changed
+  DESCRIPTION_CHANGED = :description_changed
+  OTHER_ATTR_CHANGED  = :other_attr_changed
 
   # order is matter. it is used in sorting
   TYPES = [ISSUE_CREATED,
@@ -20,6 +21,7 @@ class DigestEvent
            VERSION_CHANGED,
            OTHER_ATTR_CHANGED,
            ATTACHMENT_ADDED,
+           DESCRIPTION_CHANGED,
            COMMENT_ADDED]
 
   PROP_KEYS = {
@@ -28,7 +30,8 @@ class DigestEvent
       'assigned_to_id'   => ASSIGNEE_CHANGED,
       'fixed_version_id' => VERSION_CHANGED,
       'project_id'       => PROJECT_CHANGED,
-      'subject'          => SUBJECT_CHANGED
+      'subject'          => SUBJECT_CHANGED,
+      'description'      => DESCRIPTION_CHANGED
   }
 
   # length of notes preview
@@ -63,12 +66,14 @@ class DigestEvent
       when ISSUE_CREATED
         user_stamp
       when COMMENT_ADDED
-        "#{user_stamp}: #{value}"
+        "#{user_stamp}: #{cutted_text(value)}"
       when ATTACHMENT_ADDED
         "#{user_stamp}: #{value}"
       when STATUS_CHANGED, PERCENT_CHANGED, ASSIGNEE_CHANGED,
           VERSION_CHANGED, PROJECT_CHANGED, SUBJECT_CHANGED, OTHER_ATTR_CHANGED
         "#{user_stamp}: #{formatted_old_value} -> #{formatted_value}"
+      when DESCRIPTION_CHANGED
+        "#{user_stamp}: #{cutted_text(value)}"
       else
         raise RedmineDigest::DigestError.new "Unknown event type (#{event_type})"
     end
@@ -117,9 +122,9 @@ class DigestEvent
       when VERSION_CHANGED
         Version.find(val)
       when COMMENT_ADDED
-        # TODO: may be first X characters?
-        val.length > NOTES_LENGTH ?
-            "\"#{val.gsub("\n",'')[0..NOTES_LENGTH]}...\"" : "\"#{val}\""
+        cutted_text(val)
+      when DESCRIPTION_CHANGED
+        cutted_text(val)
       when PROJECT_CHANGED
         Project.find(val)
       when OTHER_ATTR_CHANGED
@@ -160,6 +165,11 @@ class DigestEvent
     end
   rescue
     '<unknown>'
+  end
+
+  def cutted_text(text)
+    text.length > NOTES_LENGTH ?
+        "\"#{text.gsub("\n", '')[0..NOTES_LENGTH]}...\"" : "\"#{text}\""
   end
 
   # Find the name of an associated record stored in the field attribute

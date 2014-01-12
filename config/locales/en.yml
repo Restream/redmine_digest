@@ -58,6 +58,7 @@ en:
     project_changed: "Project changed"
     subject_changed: "Subject changed"
     other_attr_changed: "Other changes"
+    description_changed: "Description changed"
 
   digest_template:
     short: "Short"

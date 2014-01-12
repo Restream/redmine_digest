@@ -61,6 +61,10 @@ class DigestRule < ActiveRecord::Base
     event_ids ? event_ids.map(&:to_sym) : []
   end
 
+  def add_event_type(event_type)
+    event_ids << event_type.to_s
+  end
+
   def affected_project_ids
     Project.
         joins(:memberships).

@@ -58,6 +58,7 @@ ru:
     project_changed: "Изменился проект"
     subject_changed: "Изменилась тема"
     other_attr_changed: "Другие изменения"
+    description_changed: "Изменилось описание"
 
   digest_template:
     short: "Краткий"

@@ -29,21 +29,35 @@
           <% if event_type == DigestEvent::OTHER_ATTR_CHANGED %>
             <%= event.field_label %>:&nbsp;
           <% end %>
-          <%= link_to event.formatted_value,
-                      {
-                          :host => Setting.host_name,
-                          :protocol => Setting.protocol,
-                          :controller => 'issues',
-                          :action => 'show',
-                          :id => event.issue_id,
-                          :anchor => "note-#{event.indice}"
-                      },
-                      :title => d_issue.events_summary(event_type),
-                      :style => 'text-decoration: none;' + color %>
-          <% if event.old_value.present? %>
-            <span style="color: #9B9B9B; text-decoration: line-through; ">
-              <%= event.formatted_old_value %>
-            </span>
+          <% if event.event_type == DigestEvent::DESCRIPTION_CHANGED %>
+            <%= link_to format_event_text(event),
+                        {
+                            :host => Setting.host_name,
+                            :protocol => Setting.protocol,
+                            :controller => 'journals',
+                            :action => 'diff',
+                            :id => event.journal.id,
+                            :detail_id => event.journal_detail.id
+                        },
+                        :title => d_issue.events_summary(event.event_type),
+                        :style => 'text-decoration: none;' + color %>
+          <% else %>
+            <%= link_to format_event_text(event),
+                        {
+                            :host => Setting.host_name,
+                            :protocol => Setting.protocol,
+                            :controller => 'issues',
+                            :action => 'show',
+                            :id => event.issue_id,
+                            :anchor => "note-#{event.indice}"
+                        },
+                        :title => d_issue.events_summary(event.event_type),
+                        :style => 'text-decoration: none;' + color %>
+            <% if event.old_value.present? %>
+              <span style="color: #9B9B9B; text-decoration: line-through; ">
+                <%= event.formatted_old_value %>
+              </span>
+            <% end %>
           <% end %>
         </td>
       </tr>

@@ -97,4 +97,22 @@ module DigestRulesHelper
     all_changes = digest_issue.changes.sort { |a, b| a.created_on <=> b.created_on }
     all_changes.group_by(&:created_on)
   end
+
+  def digest_event_diff(event)
+    diff_with_classes = Redmine::Helpers::Diff.new(event.value, event.old_value).to_html
+    diff_with_classes.
+        gsub(/class="diff_in"/, 'style="background: #afa;"').
+        gsub(/class="diff_out"/, 'style="background: #faa;"').html_safe
+  end
+
+  def format_event_text(event)
+    case event.event_type
+      when DigestEvent::DESCRIPTION_CHANGED
+        simple_format_without_paragraph digest_event_diff(event)
+      when DigestEvent::COMMENT_ADDED
+        simple_format_without_paragraph event.formatted_value
+      else
+        event.formatted_value
+    end
+  end
 end

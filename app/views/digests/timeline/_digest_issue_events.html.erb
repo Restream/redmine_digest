@@ -48,7 +48,7 @@
                           :detail_id => event.journal_detail.id
                       },
                       :title => d_issue.events_summary(event.event_type),
-                      :style => 'text-decoration: none;' + color %>
+                      :style => 'text-decoration: none; word-break: break-word;' + color %>
         <% else %>
           <%= link_to format_event_text(event),
                       {
@@ -60,7 +60,7 @@
                           :anchor => "note-#{event.indice}"
                       },
                       :title => d_issue.events_summary(event.event_type),
-                      :style => 'text-decoration: none;' + color %>
+                      :style => 'text-decoration: none; word-break: break-word;' + color %>
           <% if event.old_value.present? %>
               <span style="color: #9B9B9B; text-decoration: line-through; ">
                 <%= event.formatted_old_value %>

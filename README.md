@@ -11,6 +11,9 @@ With this plugin redmine users can create some digest rules and receive digests 
 
 ## Installation
 
+This plugin requires other plugin - https://github.com/Undev/redmine__select2
+Before installing this plugin install the redmine__select2 plugin
+
 1. Copy plugin directory into REDMINE_ROOT/plugins.
 If you are downloading the plugin directly from GitHub,
 you can do so by changing into your REDMINE_ROOT directory and issuing a command like

@@ -95,7 +95,7 @@ class DigestRule < ActiveRecord::Base
     user = journal.user
 
     if journal.notes.present? && event_type_enabled?(DigestEvent::COMMENT_ADDED)
-      events << DigestEvent.new(
+      events << DigestEventFactory.new_event(
           DigestEvent::COMMENT_ADDED, issue_id, created_on, user, journal)
     end
 
@@ -137,17 +137,16 @@ class DigestRule < ActiveRecord::Base
 
     if jdetail.property == 'attr' && DigestEvent::PROP_KEYS.has_key?(jdetail.prop_key)
       event_type = DigestEvent::PROP_KEYS[jdetail.prop_key]
-      return DigestEvent.new(event_type, issue_id, created_on,
-                             user, journal, jdetail)
+      return DigestEventFactory.new_event(event_type, issue_id, created_on, user, journal, jdetail)
     end
 
     if jdetail.property == 'attachment'
-      return DigestEvent.new(DigestEvent::ATTACHMENT_ADDED, issue_id, created_on,
-                             user, journal, jdetail)
+      return DigestEventFactory.new_event(
+          DigestEvent::ATTACHMENT_ADDED, issue_id, created_on, user, journal, jdetail)
     end
 
-    DigestEvent.new(DigestEvent::OTHER_ATTR_CHANGED, issue_id, created_on,
-                    user, journal, jdetail)
+    DigestEventFactory.new_event(
+        DigestEvent::OTHER_ATTR_CHANGED, issue_id, created_on, user, journal, jdetail)
   end
 
   def get_projects_scope

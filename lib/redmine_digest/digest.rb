@@ -82,16 +82,14 @@ module RedmineDigest
       )
 
       if include_issue_add_event?(issue)
-        event = DigestEvent.new(DigestEvent::ISSUE_CREATED,
-                                issue.id,
-                                issue.created_on,
-                                issue.author)
+        event = DigestEventFactory.new_event(
+            DigestEvent::ISSUE_CREATED, issue.id, issue.created_on, issue.author)
         d_issue.events[DigestEvent::ISSUE_CREATED] << event
       end
 
       # read all journal updates, add indice and remove private_notes
-      journals = issue.journals
-      journals.sort_by(&:id).each_with_index { |j, i| j.indice = i + 1 }
+      journals = issue.journals.sort_by(&:id)
+      journals.each_with_index { |j, i| j.indice = i + 1 }
 
       journals.each do |journal|
         next unless include_issue_edit_event?(journal)

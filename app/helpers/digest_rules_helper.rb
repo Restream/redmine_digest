@@ -34,7 +34,7 @@ module DigestRulesHelper
     projects.each do |project|
 
       children = project.cached_children.sort
-      children_tree = projects_tree_for_jump_box(children, options)
+      children_tree = projects_tree_for_selector(children, options)
 
       node = {}
 

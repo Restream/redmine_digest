@@ -31,6 +31,6 @@ module RedmineDigest::Patches::ProjectPatch
   end
 end
 
-unless Project.included_modules.include? RedmineCustomize::Patches::ProjectPatch
-  Project.send :include, RedmineCustomize::Patches::ProjectPatch
+unless Project.included_modules.include? RedmineDigest::Patches::ProjectPatch
+  Project.send :include, RedmineDigest::Patches::ProjectPatch
 end

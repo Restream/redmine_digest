@@ -6,24 +6,52 @@ module DigestRulesHelper
   end
 
   def project_ids_options_for_select
-    root_projects = Project.visible.active.roots.has_module(:issue_tracking).order(:name)
-    projects_tree(root_projects)
+    user_projects = User.current.memberships.collect(&:project).compact.select(&:active?).uniq
+    visible_projects = Project.active.visible
+    active_projects = Project.active
+    root_projects = Project.cache_children(active_projects).sort
+    result = []
+    result << {
+        :text => l(:label_my_projects),
+        :children => projects_tree_for_selector(root_projects,
+                                                :only => user_projects,
+                                                :allowed => visible_projects)
+    }
+    result << {
+        :text => l(:description_choose_project),
+        :children => projects_tree_for_selector(root_projects,
+                                                :only => visible_projects,
+                                                :allowed => visible_projects)
+    }
+    result
   end
 
-  def projects_tree(projects)
+  # expected option keys are:
+  #  :only => []    - array of projects that will be included in tree
+  #  :except => []  - array of projects that will be excluded from tree
+  def projects_tree_for_selector(projects, options = {})
     result = []
     projects.each do |project|
-      result << {
+
+      children = project.cached_children.sort
+      children_tree = projects_tree_for_jump_box(children, options)
+
+      node = {}
+
+      node.merge!(
+          :text => project.name
+      ) if show_project_as_leaf?(project, options)
+
+      node.merge!(
           :text => project.name,
+          :children => children_tree
+      ) if children_tree.any?
+
+      node.merge!(
           :id => project.id
-      }
-      children = project.children.active.has_module(:issue_tracking).order(:name)
-      if children.any?
-        result << {
-            :text => project.name,
-            :children => projects_tree(children)
-        }
-      end
+      ) if !node.empty? && allowed_to_select?(project, options)
+
+      result << node unless node.empty?
     end
     result
   end
@@ -114,5 +142,17 @@ module DigestRulesHelper
       else
         event.formatted_value
     end
+  end
+
+  private
+
+  def show_project_as_leaf?(project, options = {})
+    return false if options[:except] && options[:except].include?(project)
+    return options[:only].include?(project) if options[:only]
+    true
+  end
+
+  def allowed_to_select?(project, options = {})
+    options[:allowed] ? options[:allowed].include?(project) : false
   end
 end

@@ -1,21 +1,21 @@
 en:
-  label_digest_rule: "Rule of choosing issue updates for digest"
+  label_digest_rule: "Digest rule settings"
   label_digest_rules_plural: "Digest rules"
   label_digest_rule_new: "New digest rule"
-  label_digest_rule_edit: "Edit digest rule"
+  label_digest_rule_edit: "Edit the digest rule"
 
   new_digest_rule: "New digest rule"
 
   field_project_selector: "Projects"
   field_notify: "Notifications"
-  field_recurrent: "Recurrent"
+  field_recurrent: "Recurrence"
   field_template: "Digest template"
 
   text_event_types: "Select event types which should be included in digest"
   text_digest: "%{recurrent} digest with changes from %{time_from} to %{time_to}"
   text_digest_subject: "[%{recurrent} digest] %{name}"
   text_digest_comments: "Issues grouped by last status"
-  text_notify: "Important note: These rules does not change behaviour of sending notifications about issues where you are author or watcher or issue assigned to you"
+  text_notify: "Important note: These rules do not affect the notification sending rules for the issues created or watched by you, or assigned to you."
   text_new_issues: "New issues"
   text_changed_issues: "Changed issues"
 
@@ -26,21 +26,21 @@ en:
   project_selector:
     all: "For any issue update on all projects"
     selected: "For any issue update on the selected projects only"
-    not_selected: "For any issue update except the selected projects"
-    member: "For update on all projects where I'm member"
-    member_not_selected: "For update on projects where I'm member except the selected ones"
+    not_selected: "For any issue update except for the selected projects"
+    member: "For any update on all projects I am a member of"
+    member_not_selected: "For any update on projects I am a member of, except for the selected projects"
 
   project_selector_short:
     all: "All projects"
     selected: "Selected projects only"
-    not_selected: "Except the selected projects"
-    member: "Projects where I'm member"
-    member_not_selected: "Projects where I'm member except the selected ones"
+    not_selected: "Except for the selected projects"
+    member: "Projects I am a member of"
+    member_not_selected: "Projects I am a member of, except for the selected projects"
 
   notify_options:
-    all: "Send notifications about an event (if any) and include it in the digest"
+    all: "Send notifications about an event and include it in the digest"
     notify: "Do not include an event in the digest if a notification was sent"
-    digest: "Do not send notifications about an event if it will be included in digest"
+    digest: "Do not send notifications if an event is included in the digest"
 
   recurrent_types:
     daily: "Daily"
@@ -52,7 +52,7 @@ en:
     comment_added: "Comment added"
     attachment_added: "Attachment added"
     status_changed: "Status changed"
-    percent_changed: "Percent changed"
+    percent_changed: "Percentage changed"
     assignee_changed: "Assignee changed"
     version_changed: "Version changed"
     project_changed: "Project changed"
@@ -62,5 +62,5 @@ en:
 
   digest_template:
     short: "Short"
-    detail: "Detail (events grouped by type)"
-    timeline: "Detail (events grouped by time)"
+    detail: "Detailed (group by type)"
+    timeline: "Detailed (group by time)"

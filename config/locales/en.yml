@@ -11,7 +11,7 @@ en:
   field_recurrent: "Recurrence"
   field_template: "Digest template"
 
-  text_event_types: "Select event types which should be included in digest"
+  text_event_types: "Select event types to be included in the digest"
   text_digest: "%{recurrent} digest with changes from %{time_from} to %{time_to}"
   text_digest_subject: "[%{recurrent} digest] %{name}"
   text_digest_comments: "Issues grouped by last status"
@@ -21,7 +21,7 @@ en:
 
   button_digest_preview: "Preview"
 
-  title_digest_preview: "Preview digest"
+  title_digest_preview: "Preview"
 
   project_selector:
     all: "For any issue update on all projects"

@@ -66,7 +66,7 @@ In the notifications field, the **Send notifications about an event and include 
 By default, digests are sent once a week. To set another interval, change the value in the **Recurrence** field.  
 ![recurrence settings](digest_2_2.PNG)
 
-In the **Project** field, you can specify whether to updates of certain projects should be included in the digest or excluded from it:  
+In the **Project** field, you can specify whether the updates of certain projects should be included in the digest or excluded from it:  
 ![project settings](digest_2_3.PNG)
 
 In the **Digest template** field, you can choose between a short or a detailed (grouped either by event type or by event time) digest template:  

@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/Undev/redmine_digest.png)](https://travis-ci.org/Undev/redmine_digest)
 [![Code Climate](https://codeclimate.com/github/Undev/redmine_digest.png)](https://codeclimate.com/github/Undev/redmine_digest)
 
-This plugin enables you to send and receive daily, weekly or monthly Redmine digests.
+This plugin enables you to send and receive daily, weekly and monthly Redmine digests.
 
 ## Compatibility
 

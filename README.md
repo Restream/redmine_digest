@@ -22,7 +22,7 @@ This plugin version is compatible only with Redmine 2.2.x and later.
             
       Copy the plugins from GitHub using the following commands:
       
-            git clone https://github.com/Undev/redmine__select2 plugins/redmine__select2
+            git clone https://github.com/Undev/redmine__select2.git plugins/redmine__select2
             git clone https://github.com/Undev/redmine_digest.git plugins/redmine_digest
             
 2. Install the required gems using the command:  

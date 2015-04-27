@@ -82,6 +82,10 @@ A detailed digest displays both the changed and new values, shows the time and a
 You can create as many digest rules as needed. You can also preview, edit or delete the created  digest rule on **My account** page.  
 ![template settings](digest_3.PNG)
 
+## Maintainers
+
+Danil Tashkinov, [github.com/nodecarter](https://github.com/nodecarter)
+
 ## License
 
 Copyright (c) 2015 Undev

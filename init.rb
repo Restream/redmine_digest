@@ -8,9 +8,9 @@ ActionDispatch::Callbacks.to_prepare do
 end
 
 Redmine::Plugin.register :redmine_digest do
-  name        'RedmineDigest plugin'
-  description 'Send daily/weekly/monthly digest'
-  author      'Danil Tashkinov'
+  name        'Redmine Digest Plugin'
+  description 'This plugin enables you to send daily/weekly/monthly digests.'
+  author      'Undev'
   version     '1.0.8'
   url         'https://github.com/Undev/redmine_digest'
 

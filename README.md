@@ -1,60 +1,103 @@
-# Redmine Digest plugin
+# Redmine Digest Plugin
 
 [![Build Status](https://travis-ci.org/Undev/redmine_digest.png)](https://travis-ci.org/Undev/redmine_digest)
 [![Code Climate](https://codeclimate.com/github/Undev/redmine_digest.png)](https://codeclimate.com/github/Undev/redmine_digest)
 
-Send daily/weekly/monthly digest
+This plugin enables you to send and receive daily, weekly and monthly Redmine digests.
 
-## Description
+## Compatibility
 
-With this plugin redmine users can create some digest rules and receive digests every day/week/month.
+This plugin version is compatible only with Redmine 2.2.x and later.
 
 ## Installation
 
-This plugin requires other plugin - https://github.com/Undev/redmine__select2
-Before installing this plugin install the redmine__select2 plugin
+1. To install the plugins
+    * Download the .ZIP archives, extract files and copy the plugin directories into #{REDMINE_ROOT}/plugins.
+    
+    Or
 
-1. Copy plugin directory into REDMINE_ROOT/plugins.
-If you are downloading the plugin directly from GitHub,
-you can do so by changing into your REDMINE_ROOT directory and issuing a command like
+    * Change you current directory to your Redmine root directory:  
 
-        git clone https://github.com/Undev/redmine_digest.git plugins/redmine_digest
+            cd {REDMINE_ROOT}
+            
+      Copy the plugins from GitHub using the following commands:
+      
+            git clone https://github.com/Undev/redmine__select2.git plugins/redmine__select2
+            git clone https://github.com/Undev/redmine_digest.git plugins/redmine_digest
+            
+2. Install the required gems using the command:  
 
-2. Run the following command to run migrations (make a db backup before).
+        bundle install  
+
+    * In case of bundle install errors, remove the Gemfile.lock file, update the local package index and install the required dependencies. Then execute the `bundle install` command again:  
+
+            rm Gemfile.lock
+            sudo apt-get update
+            sudo apt-get install -y libxml2-dev libxslt-dev libpq-dev
+            bundle install
+            
+3. These plugins require a migration. Run the following command to upgrade your database (make a database backup before):  
 
         bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
-3. You now need to restart Redmine so that it shows the newly installed plugin in the list of installed plugins ("Administration -> Plugins").
-4. Configure crontab to send digests. Here is example that send daily digests every day at 01:00, weekly digest every monday at 02:00 and monthly digest every 1 day of the month at 03:00
+4. Restart Redmine.
+
+Now you should be able to see the plugins in **Administration > Plugins**.
+
+5. Modify the crontab file to configure the sending schedule for daily, weekly and monthly digests. For example, to send daily digests every day at 01:00, weekly digests every Monday at 02:00 and monthly digests every 1st day of the month at 03:00, use the following commands:
 
         0 1 * * * rvm use ruby-1.9.3 && cd /var/www/redmine && RAILS_ENV=production bundle exec rake redmine_digest:send_daily
         0 2 * * 1 rvm use ruby-1.9.3 && cd /var/www/redmine && RAILS_ENV=production bundle exec rake redmine_digest:send_weekly
         0 3 1 * * rvm use ruby-1.9.3 && cd /var/www/redmine && RAILS_ENV=production bundle exec rake redmine_digest:send_monthly
 
-## Digest rules
+## Usage
 
-You can create any number of digest rules.
+The plugin enables you to create daily, weekly or monthly digests according to the user-defined rules.
 
-![Digest rules](https://raw.github.com/Undev/redmine_digest/master/screenshot/digest_rules.png "Digest rules")
+To create a digest rule, click **My account** and then click **New digest rule**.  
+![Digest rules](digest_1.PNG)
 
-Go to the my account page and create a rule by clicking "New digest rule" button.
+Specify the rule name, select which events should be included in a digest (all options are enabled by default) and configure other options as necessary. The following settings are available:  
+![Digest rule settings](digest_2.PNG)
 
-Short template:
+In the notifications field, the **Send notifications about an event and include it in the digest** value is selected by default. Other options are as follows:  
+![notification settings](digest_2_1.PNG)
 
-![Digest rule form](https://raw.github.com/Undev/redmine_digest/master/screenshot/digest_rule_form.png "Digest rule form")
+By default, digests are sent once a week. To set another interval, change the value in the **Recurrence** field.  
+![recurrence settings](digest_2_2.PNG)
 
-Detail template:
+In the **Project** field, you can specify whether the updates of certain projects should be included in the digest or excluded from it:  
+![project settings](digest_2_3.PNG)
 
-![Digest (short template)](https://raw.github.com/Undev/redmine_digest/master/screenshot/short.png "Digest (short template)")
+In the **Digest template** field, you can choose between a short or a detailed (grouped either by event type or by event time) digest template:  
+![template settings](digest_2_4.PNG)
 
-![Digest (detail template)](https://raw.github.com/Undev/redmine_digest/master/screenshot/detail.png "Digest (detail template)")
+A short digest lists an highlights the project changes:
+![short digest](digest_4.PNG)
+
+A detailed digest displays both the changed and new values, shows the time and author of the updates.  
+![detailed digest](digest_5.PNG)  
+![detailed digest](digest_6.PNG)
+
+You can create as many digest rules as needed. You can also preview, edit or delete the created  digest rule on **My account** page.  
+![template settings](digest_3.PNG)
+
+## Maintainers
+
+Danil Tashkinov, [github.com/nodecarter](https://github.com/nodecarter)
 
 ## License
 
-Copyright (C) 2013 Undev.ru
+Copyright (c) 2015 Undev
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+http://www.apache.org/licenses/LICENSE-2.0
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

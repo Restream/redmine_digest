@@ -1,0 +1,68 @@
+# Turkish strings by Adnan Topcu for i18n
+tr:
+  label_digest_rule: "Derleme kural ayarları"
+  label_digest_rules_plural: "Derleme kuralları"
+  label_digest_rule_new: "Yeni derleme kuralı"
+  label_digest_rule_edit: "Derleme kuralını düzenle"
+
+  new_digest_rule: "Yeni derleme kuralı"
+
+  field_project_selector: "Projeler"
+  field_notify: "Bilgilendirmeler"
+  field_recurrent: "Yinelenme"
+  field_template: "Derleme taslağı"
+
+  text_event_types: "Derlemede yer alacak olay tiplerini seç"
+  text_digest: "%{time_from} - %{time_to} tarihleri arasındaki değişiliklerin %{recurrent} derlemesi "
+  text_digest_subject: "[%{recurrent} derleme] %{name}"
+  text_digest_comments: "İşler son durumlarına göre kırılımlandırıldı"
+  text_notify: "Not: Bu seçim, işlerin yazarı, takipçisi ve atananı olma nedenleriyle alınan bildirimleri etkilemez."
+  text_new_issues: "Yeni işler"
+  text_changed_issues: "Güncellenen işler"
+
+  button_digest_preview: "Önizleme"
+
+  title_digest_preview: "Önizleme"
+
+  project_selector:
+    all: "Tüm projelerdeki her hangi bir işin güncellenmesi"
+    selected: "Seçili projelerdeki her hangi bir işin güncellenmesi"
+    not_selected: "Seçili olanlar dışındaki projelerde herhangi bir işin güncellenmesi"
+    member: "Üye olduğum tüm projelerde herhangi bir güncelleme olması"
+    member_not_selected: "Seçilenler dışındaki üye olduğum tüm projelerde herhangi bir güncelleme olması"
+
+  project_selector_short:
+    all: "Tüm projeler"
+    selected: "Seçili projeler sadece"
+    not_selected: "Seçili projeler hariç"
+    member: "Üyesi olduğum projeler"
+    member_not_selected: "Seçili olanlar dışındaki üyesi olduğum projeler"
+
+  notify_options:
+    all: "Bilgilendirme iletisi gönderilmiş olayları derlemeye dahil et"
+    notify: "Bilgilendirme iletisi gönderilmiş olayları derlemeye dahil etme"
+    digest: "Derlemeye dahil olan olaylar için bilgilendirme iletisi gönderme"
+
+  recurrent_types:
+    daily: "Günlük"
+    weekly: "Haftalık"
+    monthly: "Aylık"
+
+  event_types:
+    issue_created: "İş oluşturma"
+    comment_added: "Yorum ekleme"
+    attachment_added: "Eklenti ekleme"
+    status_changed: "Durum değişikliği"
+    percent_changed: "Tamamlanma oranı değişikliği"
+    assignee_changed: "Atananın değişmesi"
+    version_changed: "Hedef sürümün değişmesi"
+    project_changed: "Projenin değişmesi"
+    subject_changed: "Konu alanının değişmesi"
+    other_attr_changed: "Diğer değişiklikler"
+    description_changed: "Açıklamanın değişmesi"
+
+  digest_template:
+    short: "Kısa"
+    detail: "Detaylı (Tipe göre gruplanmış olarak)"
+    timeline: "Detaylı (zamana göre gruplanmış olarak)"
+

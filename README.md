@@ -72,7 +72,7 @@ In the **Project** field, you can specify whether the updates of certain project
 In the **Digest template** field, you can choose between a short or a detailed (grouped either by event type or by event time) digest template:  
 ![template settings](digest_2_4.PNG)
 
-A short digest lists an highlights the project changes:
+A short digest lists and highlights the project changes:
 ![short digest](digest_4.PNG)
 
 A detailed digest displays both the changed and new values, shows the time and author of the updates.  

@@ -1,4 +1,4 @@
-require 'issue'
+require_dependency 'issue'
 
 module RedmineDigest
   module Patches

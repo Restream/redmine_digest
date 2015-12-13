@@ -82,7 +82,7 @@ class DigestEvent::Base
           when 'due_date', 'start_date'
             format_date(val.to_date) if val
 
-          when 'project_id', 'status_id', 'tracker_id', 'assigned_to_id',
+          when 'project_id', 'status_id', 'tracker_id', 'assigned_to_id', 'assigned_to',
               'priority_id', 'category_id', 'fixed_version_id'
             find_name_by_reflection(field, val)
 

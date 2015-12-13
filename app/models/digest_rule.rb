@@ -35,7 +35,7 @@ class DigestRule < ActiveRecord::Base
   validates :recurrent, :inclusion => { :in => RECURRENT_TYPES }
   validates :template, :inclusion => { :in => TEMPLATES }
 
-  scope :active,  -> { where('active = ?', true) }
+  scope :active,  -> { joins(:user).where("active = ? AND #{ User.table_name }.status = ?", true, User::STATUS_ACTIVE) }
 
   scope :digest_only, -> { where('notify = ?', DIGEST_ONLY) }
 

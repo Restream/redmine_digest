@@ -184,8 +184,9 @@ module RedmineDigest
     end
 
     def get_issues_scope(issue_ids)
-      Issue.includes(:author, :project, :journals => [:user, :details]).
+      Issue.includes(:author, :journals => [:user, :details]).
           where('issues.id in (?)', issue_ids).
+          joins(:project).
           where(Issue.visible_condition(user))
     end
 

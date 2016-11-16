@@ -1,14 +1,14 @@
 <tr>
   <td colspan="4" style="padding-top: 10px; font-size: 12pt;">
     <%= link_to digest_issue_url(d_issue),
-                :title => digest_issue_title(d_issue),
-                :style => 'color: #10152c; text-decoration: none;' do %>
-      <%= digest_issue_text(d_issue, digest.many_projects?) %>
+                title: digest_issue_title(d_issue),
+                style: 'color: #10152c; text-decoration: none;' do %>
+        <%= digest_issue_text(d_issue, digest.many_projects?) %>
     <% end %>
   </td>
 </tr>
 <% if d_issue.any_changes_events? %>
-  <%= render digest.template_path('digest_issue_events'),
-             :digest => digest,
-             :d_issue => d_issue %>
+    <%= render digest.template_path('digest_issue_events'),
+               digest:  digest,
+               d_issue: d_issue %>
 <% end %>

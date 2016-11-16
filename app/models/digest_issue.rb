@@ -1,6 +1,6 @@
 class DigestIssue < Hashie::Dash
-  property :id, :required => true
-  property :subject, :required => true
+  property :id, required: true
+  property :subject, required: true
   property :project_id
   property :project_name
 
@@ -8,7 +8,7 @@ class DigestIssue < Hashie::Dash
   property :last_updated_on
   property :status_id
 
-  property :is_new, :default => false
+  property :is_new, default: false
   property :events
 
   property :priority
@@ -18,7 +18,7 @@ class DigestIssue < Hashie::Dash
   end
 
   def events_summary(event_type)
-    result = [I18n.t(event_type, :scope => 'event_types')]
+    result = [I18n.t(event_type, scope: 'event_types')]
     result += events[event_type].map(&:event_summary)
     result.join("  \n")
   end

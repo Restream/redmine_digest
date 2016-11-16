@@ -10,7 +10,7 @@ class DigestEvent::Base
 
   def initialize(event_type, issue_id, created_on, user, journal = nil, journal_detail = nil)
     @event_type, @issue_id, @created_on, @user, @journal, @journal_detail =
-        event_type, issue_id, created_on, user, journal, journal_detail
+      event_type, issue_id, created_on, user, journal, journal_detail
   end
 
   def old_value
@@ -47,8 +47,8 @@ class DigestEvent::Base
       when 'attr'
         field = journal_detail.prop_key.to_s.gsub(/_id$/, '')
         journal_detail.prop_key == 'parent_id' ?
-            l(:field_parent_issue) :
-            l(('field_' + field).to_sym)
+          l(:field_parent_issue) :
+          l(('field_' + field).to_sym)
       when 'cf'
         custom_field = CustomField.find_by_id(journal_detail.prop_key)
         custom_field.try :name
@@ -83,7 +83,7 @@ class DigestEvent::Base
             format_date(val.to_date) if val
 
           when 'project_id', 'status_id', 'tracker_id', 'assigned_to_id', 'assigned_to',
-              'priority_id', 'category_id', 'fixed_version_id'
+            'priority_id', 'category_id', 'fixed_version_id'
             find_name_by_reflection(field, val)
 
           when 'estimated_hours'
@@ -111,8 +111,8 @@ class DigestEvent::Base
   def cutted_text(text)
     return '""' if text.blank?
     text.length > NOTES_LENGTH ?
-        "\"#{text.gsub("\n", '')[0..NOTES_LENGTH]}...\"" :
-        "\"#{text}\""
+      "\"#{text.gsub("\n", '')[0..NOTES_LENGTH]}...\"" :
+      "\"#{text}\""
   end
 
   # Find the name of an associated record stored in the field attribute
@@ -126,7 +126,7 @@ class DigestEvent::Base
 
   def format_custom_field_value(val, field_format)
     if val.is_a?(Array)
-      val.collect {|v| format_custom_field_value(v, field_format)}.compact.sort.join(', ')
+      val.collect { |v| format_custom_field_value(v, field_format) }.compact.sort.join(', ')
     else
       Redmine::CustomFieldFormat.format_value(val, field_format)
     end

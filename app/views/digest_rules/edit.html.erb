@@ -1,8 +1,8 @@
-<%=	render 'includes' %>
+<%= render 'includes' %>
 
-<h2><%= l( :label_digest_rule_edit ) %></h2>
-<%= labelled_form_for(@digest_rule, :url => digest_rule_path(@digest_rule)) do |f| %>
-  <%= render :partial => 'form', :locals => { :f => f } %>
-  <%= submit_tag l(:button_save) %>
-  <%= link_to l(:button_cancel), :controller => 'my', :action => 'account' %>
+<h2><%= l(:label_digest_rule_edit) %></h2>
+<%= labelled_form_for(@digest_rule, url: digest_rule_path(@digest_rule)) do |f| %>
+    <%= render partial: 'form', locals: { f: f } %>
+    <%= submit_tag l(:button_save) %>
+    <%= link_to l(:button_cancel), controller: 'my', action: 'account' %>
 <% end %>

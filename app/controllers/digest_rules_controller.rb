@@ -11,9 +11,9 @@ class DigestRulesController < ApplicationController
   def create
     @digest_rule = @user.digest_rules.build(params[:digest_rule])
     if @digest_rule.save
-      redirect_to :controller => 'my', :action => 'account'
+      redirect_to controller: 'my', action: 'account'
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -24,22 +24,22 @@ class DigestRulesController < ApplicationController
   def update
     @digest_rule = @user.digest_rules.find(params[:id])
     if @digest_rule.update_attributes(params[:digest_rule])
-      redirect_to :controller => 'my', :action => 'account'
+      redirect_to controller: 'my', action: 'account'
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
   def destroy
     digest_rule = @user.digest_rules.find(params[:id])
     digest_rule.destroy
-    redirect_to :controller => 'my', :action => 'account'
+    redirect_to controller: 'my', action: 'account'
   end
 
   def show
     digest_rule = @user.digest_rules.find(params[:id])
-    @digest = RedmineDigest::Digest.new(digest_rule, Time.now, PREVIEW_ISSUE_LIMIT)
-    render :layout => 'digest'
+    @digest     = RedmineDigest::Digest.new(digest_rule, Time.now, PREVIEW_ISSUE_LIMIT)
+    render layout: 'digest'
   end
 
   private

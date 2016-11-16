@@ -1,6 +1,6 @@
-require 'project'
-require 'principal'
-require 'user'
+require_dependency 'project'
+require_dependency 'principal'
+require_dependency 'user'
 
 module RedmineDigest
   module Patches
@@ -13,8 +13,8 @@ module RedmineDigest
 
       def involved_in?(issue)
         issue.author == self ||
-            is_or_belongs_to?(issue.assigned_to) ||
-            is_or_belongs_to?(issue.assigned_to_was)
+          is_or_belongs_to?(issue.assigned_to) ||
+          is_or_belongs_to?(issue.assigned_to_was)
       end
 
       def skip_issue_add_notify?(issue)
@@ -39,8 +39,4 @@ module RedmineDigest
       end
     end
   end
-end
-
-unless User.included_modules.include?(RedmineDigest::Patches::UserPatch)
-  User.send :include, RedmineDigest::Patches::UserPatch
 end

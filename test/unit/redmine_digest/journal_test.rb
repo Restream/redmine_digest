@@ -1,7 +1,7 @@
 require File.expand_path('../../../test_helper', __FILE__)
 
 class RedmineDigest::JournalTest < ActiveSupport::TestCase
-  fixtures :projects, :users, :members, :member_roles, :roles,
+  fixtures :projects, :users, :members, :member_roles, :roles, :email_addresses,
            :groups_users,
            :trackers, :projects_trackers,
            :enabled_modules,
@@ -26,24 +26,24 @@ class RedmineDigest::JournalTest < ActiveSupport::TestCase
   #         on    yes           yes           *         no
 
   def setup
-    @assignee = User.find(2)
+    @assignee                   = User.find(2)
     @assignee.mail_notification = 'all'
     @assignee.save!
-    assigned_issue = Issue.find(8)
+    assigned_issue             = Issue.find(8)
     assigned_issue.assigned_to = @assignee
     assigned_issue.save!
     @assigned_journal = Journal.create!(
-        :journalized => assigned_issue,
-        :notes => 'some change',
-        :user => User.find(1))
+      journalized: assigned_issue,
+      notes:       'some change',
+      user:        User.find(1))
 
-    @watcher = User.find(3)
+    @watcher                   = User.find(3)
     @watcher.mail_notification = 'all'
     @watcher.save!
-    @watched_journal = Issue.find(2).journals.first
+    @watched_journal          = Issue.find(2).journals.first
 
     # from project where @assignee and @watcher are members
-    not_involved_issue = Issue.find(1)
+    not_involved_issue        = Issue.find(1)
     not_involved_issue.author = User.find(1)
     not_involved_issue.save!
     @not_involved_journal = not_involved_issue.journals.first
@@ -67,11 +67,11 @@ class RedmineDigest::JournalTest < ActiveSupport::TestCase
 
   def create_digest_rule(user)
     user.digest_rules.create(
-        :name => 'test',
-        :notify => DigestRule::DIGEST_ONLY,
-        :recurrent => DigestRule::MONTHLY,
-        :project_selector => DigestRule::ALL,
-        :event_ids => DigestEvent::TYPES
+      name:             'test',
+      notify:           DigestRule::DIGEST_ONLY,
+      recurrent:        DigestRule::MONTHLY,
+      project_selector: DigestRule::ALL,
+      event_ids:        DigestEvent::TYPES
     )
   end
 end

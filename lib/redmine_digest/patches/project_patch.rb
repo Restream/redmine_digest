@@ -1,4 +1,4 @@
-require 'project'
+require_dependency 'project'
 
 module RedmineDigest::Patches::ProjectPatch
   extend ActiveSupport::Concern
@@ -12,7 +12,7 @@ module RedmineDigest::Patches::ProjectPatch
     def cache_children(projects)
       # first clear cache
       projects.each { |p| p.cached_children.clear }
-      roots = []
+      roots     = []
       ancestors = []
       projects.sort_by(&:lft).each do |project|
         while ancestors.any? && !project.is_descendant_of?(ancestors.last)
@@ -29,8 +29,4 @@ module RedmineDigest::Patches::ProjectPatch
     end
 
   end
-end
-
-unless Project.included_modules.include? RedmineDigest::Patches::ProjectPatch
-  Project.send :include, RedmineDigest::Patches::ProjectPatch
 end

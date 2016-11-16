@@ -28,7 +28,7 @@
 
   <p id="digest-rule-projects" class="select2-field">
     <%= f.hidden_field :raw_project_ids,
-                       :data => { :options => project_ids_options_for_select } %>
+                       data: { options: project_ids_options_for_select } %>
   </p>
 
   <p>
@@ -36,18 +36,18 @@
   </p>
 
   <fieldset>
-    <legend><%=	l(:text_event_types) %></legend>
+    <legend><%= l(:text_event_types) %></legend>
     <%= hidden_field_tag 'event_ids[]', [] %>
 
     <% DigestEvent::TYPES.each do |event_type| %>
-      <p>
-        <%= label_tag event_type_id(event_type), l(event_type, :scope => 'event_types') %>
-        <%=	check_box_tag 'digest_rule[event_ids][]',
-                          event_type,
-                          f.object.event_type_enabled?(event_type),
-                          :id => event_type_id(event_type) %>
-        <br />
-      </p>
+        <p>
+          <%= label_tag event_type_id(event_type), l(event_type, scope: 'event_types') %>
+          <%= check_box_tag 'digest_rule[event_ids][]',
+                            event_type,
+                            f.object.event_type_enabled?(event_type),
+                            id: event_type_id(event_type) %>
+          <br/>
+        </p>
     <% end %>
   </fieldset>
 </div>

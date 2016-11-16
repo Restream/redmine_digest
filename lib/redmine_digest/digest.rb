@@ -6,12 +6,12 @@ module RedmineDigest
     attr_reader :digest_rule, :time_to
 
     delegate :name, :user, :recurrent, :project_selector,
-             :to => :digest_rule, :allow_nil => true
+             to: :digest_rule, allow_nil: true
 
     def initialize(digest_rule, time_to = nil, issue_limit = nil)
-      @digest_rule = digest_rule
+      @digest_rule  = digest_rule
       @time_to_base = time_to
-      @issue_limit = issue_limit
+      @issue_limit  = issue_limit
     end
 
     def issues
@@ -71,19 +71,19 @@ module RedmineDigest
 
     def get_digest_issue_with_events(issue)
       d_issue = DigestIssue.new(
-          :id => issue.id,
-          :subject => issue.subject,
-          :status_id => issue.status_id,
-          :project_id => issue.project_id,
-          :project_name => issue.project.name,
-          :created_on => issue.created_on,
-          :last_updated_on => issue.created_on,
-          :priority => issue.priority
+        id:              issue.id,
+        subject:         issue.subject,
+        status_id:       issue.status_id,
+        project_id:      issue.project_id,
+        project_name:    issue.project.name,
+        created_on:      issue.created_on,
+        last_updated_on: issue.created_on,
+        priority:        issue.priority
       )
 
       if include_issue_add_event?(issue)
         event = DigestEventFactory.new_event(
-            DigestEvent::ISSUE_CREATED, issue.id, issue.created_on, issue.author)
+          DigestEvent::ISSUE_CREATED, issue.id, issue.created_on, issue.author)
         d_issue.events[DigestEvent::ISSUE_CREATED] << event
       end
 
@@ -94,14 +94,14 @@ module RedmineDigest
       journals.each do |journal|
         next unless include_issue_edit_event?(journal)
 
-        events = digest_rule.find_events_by_journal(journal)
+        events            = digest_rule.find_events_by_journal(journal)
 
         # get status_id from change history
-        status_id_change = events.detect { |e| e.event_type == DigestEvent::STATUS_CHANGED }
+        status_id_change  = events.detect { |e| e.event_type == DigestEvent::STATUS_CHANGED }
         d_issue.status_id = status_id_change.value if status_id_change
 
         next if journal.private_notes? &&
-            !user.allowed_to?(:view_private_notes, issue.project)
+          !user.allowed_to?(:view_private_notes, issue.project)
 
         events.each do |event|
           d_issue.last_updated_on = journal.created_on
@@ -134,17 +134,17 @@ module RedmineDigest
 
     def notified_events?(journal)
       Setting.notified_events.include?('issue_updated') ||
-          (Setting.notified_events.include?('issue_note_added') && journal.notes.present?) ||
-          (Setting.notified_events.include?('issue_status_updated') && journal.new_status.present?) ||
-          (Setting.notified_events.include?('issue_priority_updated') && journal.new_value_for('priority_id').present?)
+        (Setting.notified_events.include?('issue_note_added') && journal.notes.present?) ||
+        (Setting.notified_events.include?('issue_status_updated') && journal.new_status.present?) ||
+        (Setting.notified_events.include?('issue_priority_updated') && journal.new_value_for('priority_id').present?)
     end
 
     def include_issue_add_event?(issue)
       return false unless in_time_frame?(issue.created_on)
 
       skip_digest = digest_rule.notify_only? &&
-          Setting.notified_events.include?('issue_added') &&
-          user_in_recipients?(issue)
+        Setting.notified_events.include?('issue_added') &&
+        user_in_recipients?(issue)
 
       !skip_digest
     end
@@ -161,8 +161,8 @@ module RedmineDigest
       result = ActiveSupport::OrderedHash.new
       IssueStatus.sorted.each do |status|
         result[status] = issues.
-            find_all { |i| i.status_id.to_i == status.id }.
-            sort{ |a, b| b.sort_key <=> a.sort_key }
+          find_all { |i| i.status_id.to_i == status.id }.
+          sort { |a, b| b.sort_key <=> a.sort_key }
       end
       result
     end
@@ -173,20 +173,20 @@ module RedmineDigest
 
     def get_changed_issue_ids
       Journal.joins(:issue).where('issues.project_id in (?)', project_ids).
-          where('journals.created_on >= ? and journals.created_on < ?', time_from, time_to).
-          uniq.pluck(:journalized_id)
+        where('journals.created_on >= ? and journals.created_on < ?', time_from, time_to).
+        uniq.pluck(:journalized_id)
     end
 
     def get_created_issue_ids
       Issue.where('issues.project_id in (?)', project_ids).
-          where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to).
-          uniq.pluck(:id)
+        where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to).
+        uniq.pluck(:id)
     end
 
     def get_issues_scope(issue_ids)
-      Issue.includes(:author, :project, :journals => [:user, :details]).
-          where('issues.id in (?)', issue_ids).
-          where(Issue.visible_condition(user))
+      Issue.joins(:project).includes(:author, :project, journals: [:user, :details]).
+        where('issues.id in (?)', issue_ids).
+        where(Issue.visible_condition(user))
     end
 
     def project_ids

@@ -1,4 +1,4 @@
-require 'journal'
+require_dependency 'journal'
 
 module RedmineDigest
   module Patches
@@ -19,7 +19,7 @@ module RedmineDigest
       end
 
       def watcher_recipients_with_digest_filter
-        found_mails = watcher_recipients_without_digest_filter
+        found_mails    = watcher_recipients_without_digest_filter
         found_watchers = found_mails.map { |mail| User.find_by_mail(mail) }
         found_watchers.reject do |found_watcher|
           found_watcher.skip_issue_edit_notify?(self)
@@ -27,8 +27,4 @@ module RedmineDigest
       end
     end
   end
-end
-
-unless Journal.included_modules.include?(RedmineDigest::Patches::JournalPatch)
-  Journal.send :include, RedmineDigest::Patches::JournalPatch
 end

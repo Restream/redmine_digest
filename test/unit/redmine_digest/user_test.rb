@@ -1,7 +1,7 @@
 require File.expand_path('../../../test_helper', __FILE__)
 
 class RedmineDigest::UserTest < ActiveSupport::TestCase
-  fixtures :projects, :users, :members, :member_roles, :roles,
+  fixtures :projects, :users, :members, :member_roles, :roles, :email_addresses,
            :groups_users,
            :trackers, :projects_trackers,
            :enabled_modules,
@@ -14,8 +14,8 @@ class RedmineDigest::UserTest < ActiveSupport::TestCase
            :watchers
 
   def setup
-    @user = User.find(3)
-    @issue = Issue.find(1)
+    @user    = User.find(3)
+    @issue   = Issue.find(1)
     @journal = Journal.find(1) # issue_id: 1, changed status and done_ratio
   end
 
@@ -51,11 +51,11 @@ class RedmineDigest::UserTest < ActiveSupport::TestCase
 
   def create_rule(notify_option)
     @user.digest_rules.create(
-        :name => 'test',
-        :notify => notify_option,
-        :recurrent => DigestRule::MONTHLY,
-        :project_selector => DigestRule::ALL,
-        :event_ids => DigestEvent::TYPES
+      name:             'test',
+      notify:           notify_option,
+      recurrent:        DigestRule::MONTHLY,
+      project_selector: DigestRule::ALL,
+      event_ids:        DigestEvent::TYPES
     )
   end
 end

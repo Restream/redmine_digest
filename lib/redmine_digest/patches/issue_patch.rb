@@ -1,4 +1,5 @@
 require_dependency 'issue'
+require 'active_support/concern'
 
 module RedmineDigest
   module Patches
@@ -19,7 +20,7 @@ module RedmineDigest
       end
 
       def watcher_recipients_with_digest_filter
-        found_mails = watcher_recipients_without_digest_filter
+        found_mails    = watcher_recipients_without_digest_filter
         found_watchers = found_mails.map { |mail| User.find_by_mail(mail) }
         found_watchers.reject do |found_watcher|
           found_watcher.skip_issue_add_notify?(self)
@@ -27,8 +28,4 @@ module RedmineDigest
       end
     end
   end
-end
-
-unless Issue.included_modules.include?(RedmineDigest::Patches::IssuePatch)
-  Issue.send :include, RedmineDigest::Patches::IssuePatch
 end

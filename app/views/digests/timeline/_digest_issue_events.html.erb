@@ -1,74 +1,74 @@
 <% digest_issue_changes_timeline(d_issue).each do |_, events| %>
-  <% events.sort.each_with_index do |event, idx| %>
-    <% bottom_border = (events.length == idx + 1) ?
-            'border-bottom: 2px solid #DDDDDD;' : 'border-bottom: 1px dotted #DDDDDD;'
-       color = 'color: #10152C;'
-    %>
-    <tr>
-      <% if idx == 0 %>
-        <td rowspan="<%= events.length %>" style="width: 10em; text-align: left; vertical-align: bottom; border-bottom: 2px solid #DDDDDD;">
-          <%= link_to format_time(event.created_on, digest.recurrent != DigestRule::DAILY),
-                      {
-                          :host => Setting.host_name,
-                          :protocol => Setting.protocol,
-                          :controller => 'issues',
-                          :action => 'show',
-                          :id => event.issue_id,
-                          :anchor => "note-#{event.indice}"
-                      },
-                      :style => 'text-decoration: none;' + color %>
-        </td>
-        <td rowspan="<%= events.length %>" style="width: 10em; text-align: left; border-right: 1px solid #DDDDDD; vertical-align: bottom; border-bottom: 2px solid #DDDDDD;">
-          <%= link_to event.user.name,
-                      {
-                          :host => Setting.host_name,
-                          :protocol => Setting.protocol,
-                          :controller => 'users',
-                          :action => 'show',
-                          :id => event.user.id
-                      },
-                      :style => 'text-decoration: none;' + color %>
-        </td>
-      <% end %>
-      <td style="vertical-align: bottom; width: 12em; text-align: center; color: #AFAFAF;<%= bottom_border %>">
-        <%= l(event.event_type, :scope => 'event_types') %>
-      </td>
-      <td style="vertical-align: bottom; <%= bottom_border + color %>">
-        <% if event.event_type == DigestEvent::OTHER_ATTR_CHANGED %>
-          <%= event.field_label %>:&nbsp;
-        <% end %>
-        <% if event.event_type == DigestEvent::DESCRIPTION_CHANGED %>
-          <%= link_to format_event_text(event),
-                      {
-                          :host => Setting.host_name,
-                          :protocol => Setting.protocol,
-                          :controller => 'journals',
-                          :action => 'diff',
-                          :id => event.journal.id,
-                          :detail_id => event.journal_detail.id
-                      },
-                      :title => d_issue.events_summary(event.event_type),
-                      :style => 'text-decoration: none; word-break: break-word;' + color %>
-        <% else %>
-          <%= link_to format_event_text(event),
-                      {
-                          :host => Setting.host_name,
-                          :protocol => Setting.protocol,
-                          :controller => 'issues',
-                          :action => 'show',
-                          :id => event.issue_id,
-                          :anchor => "note-#{event.indice}"
-                      },
-                      :title => d_issue.events_summary(event.event_type),
-                      :style => 'text-decoration: none; word-break: break-word;' + color %>
-          <% if event.old_value.present? %>
+    <% events.sort.each_with_index do |event, idx| %>
+        <% bottom_border = (events.length == idx + 1) ?
+          'border-bottom: 2px solid #DDDDDD;' : 'border-bottom: 1px dotted #DDDDDD;'
+           color = 'color: #10152C;'
+        %>
+        <tr>
+          <% if idx == 0 %>
+              <td rowspan="<%= events.length %>" style="width: 10em; text-align: left; vertical-align: bottom; border-bottom: 2px solid #DDDDDD;">
+                <%= link_to format_time(event.created_on, digest.recurrent != DigestRule::DAILY),
+                            {
+                              host:       Setting.host_name,
+                              protocol:   Setting.protocol,
+                              controller: 'issues',
+                              action:     'show',
+                              id:         event.issue_id,
+                              anchor:     "note-#{event.indice}"
+                            },
+                            style: 'text-decoration: none;' + color %>
+              </td>
+              <td rowspan="<%= events.length %>" style="width: 10em; text-align: left; border-right: 1px solid #DDDDDD; vertical-align: bottom; border-bottom: 2px solid #DDDDDD;">
+                <%= link_to event.user.name,
+                            {
+                              host:       Setting.host_name,
+                              protocol:   Setting.protocol,
+                              controller: 'users',
+                              action:     'show',
+                              id:         event.user.id
+                            },
+                            style: 'text-decoration: none;' + color %>
+              </td>
+          <% end %>
+          <td style="vertical-align: bottom; width: 12em; text-align: center; color: #AFAFAF;<%= bottom_border %>">
+            <%= l(event.event_type, scope: 'event_types') %>
+          </td>
+          <td style="vertical-align: bottom; <%= bottom_border + color %>">
+            <% if event.event_type == DigestEvent::OTHER_ATTR_CHANGED %>
+                <%= event.field_label %>:&nbsp;
+            <% end %>
+            <% if event.event_type == DigestEvent::DESCRIPTION_CHANGED %>
+                <%= link_to format_event_text(event),
+                            {
+                              host:       Setting.host_name,
+                              protocol:   Setting.protocol,
+                              controller: 'journals',
+                              action:     'diff',
+                              id:         event.journal.id,
+                              detail_id:  event.journal_detail.id
+                            },
+                            title: d_issue.events_summary(event.event_type),
+                            style: 'text-decoration: none; word-break: break-word;' + color %>
+            <% else %>
+                <%= link_to format_event_text(event),
+                            {
+                              host:       Setting.host_name,
+                              protocol:   Setting.protocol,
+                              controller: 'issues',
+                              action:     'show',
+                              id:         event.issue_id,
+                              anchor:     "note-#{event.indice}"
+                            },
+                            title: d_issue.events_summary(event.event_type),
+                            style: 'text-decoration: none; word-break: break-word;' + color %>
+                <% if event.old_value.present? %>
               <span style="color: #9B9B9B; text-decoration: line-through; ">
                 <%= event.formatted_old_value %>
               </span>
-          <% end %>
-        <% end %>
-      </td>
-    </tr>
+                <% end %>
+            <% end %>
+          </td>
+        </tr>
 
-  <% end %>
+    <% end %>
 <% end %>

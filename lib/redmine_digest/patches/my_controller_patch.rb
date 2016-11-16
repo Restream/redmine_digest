@@ -1,4 +1,4 @@
-require 'my_controller'
+require_dependency 'my_controller'
 
 module RedmineDigest
   module Patches
@@ -7,7 +7,7 @@ module RedmineDigest
 
       included do
         private :toggle_digest_rules
-        before_filter :toggle_digest_rules, :only => [:account], :if => -> { request.post? }
+        before_action :toggle_digest_rules, only: [:account], if: -> { request.post? }
       end
 
       def toggle_digest_rules
@@ -24,8 +24,4 @@ module RedmineDigest
 
     end
   end
-end
-
-unless MyController.included_modules.include?(RedmineDigest::Patches::MyControllerPatch)
-  MyController.send :include, RedmineDigest::Patches::MyControllerPatch
 end

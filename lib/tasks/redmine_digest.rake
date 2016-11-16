@@ -1,19 +1,19 @@
 namespace :redmine_digest do
 
   desc 'Send daily digests by all active rules'
-  task :send_daily => [:environment] do
+  task send_daily: [:environment] do
     puts "#{Time.now} Send daily digests."
     send_digests DigestRule.active.daily
   end
 
   desc 'Send weekly digests by all active rules'
-  task :send_weekly => [:environment] do
+  task send_weekly: [:environment] do
     puts "#{Time.now} Send weekly digests."
     send_digests DigestRule.active.weekly
   end
 
   desc 'Send monthly digests by all active rules'
-  task :send_monthly => [:environment] do
+  task send_monthly: [:environment] do
     puts "#{Time.now} Send monthly digests."
     send_digests DigestRule.active.monthly
   end

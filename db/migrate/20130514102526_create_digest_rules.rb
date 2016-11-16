@@ -1,6 +1,6 @@
 class CreateDigestRules < ActiveRecord::Migration
   def change
-    create_table :digest_rules, :force => true do |t|
+    create_table :digest_rules, force: true do |t|
       t.references :user
       t.string :name
       t.integer :position

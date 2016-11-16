@@ -1,13 +1,13 @@
 # Redmine Digest Plugin
 
-[![Build Status](https://travis-ci.org/Undev/redmine_digest.png)](https://travis-ci.org/Undev/redmine_digest)
-[![Code Climate](https://codeclimate.com/github/Undev/redmine_digest.png)](https://codeclimate.com/github/Undev/redmine_digest)
+[![Build Status](https://travis-ci.org/Restream/redmine_digest.png)](https://travis-ci.org/Restream/redmine_digest)
+[![Code Climate](https://codeclimate.com/github/Restream/redmine_digest.png)](https://codeclimate.com/github/Restream/redmine_digest)
 
 This plugin enables you to send and receive daily, weekly and monthly Redmine digests.
 
 ## Compatibility
 
-This plugin version is compatible only with Redmine 2.2.x and later.
+This plugin version is compatible only with Redmine 3.x and later.
 
 ## Installation
 
@@ -24,8 +24,8 @@ This plugin requires Redmine Select2 Plugin to be installed.
             
       Copy the plugins from GitHub using the following commands:
       
-            git clone https://github.com/Undev/redmine__select2.git plugins/redmine__select2
-            git clone https://github.com/Undev/redmine_digest.git plugins/redmine_digest
+            git clone https://github.com/Restream/redmine__select2.git plugins/redmine__select2
+            git clone https://github.com/Restream/redmine_digest.git plugins/redmine_digest
             
 2. Install the required gems using the command:  
 
@@ -57,32 +57,32 @@ Now you should be able to see the plugins in **Administration > Plugins**.
 The plugin enables you to create daily, weekly or monthly digests according to the user-defined rules.
 
 To create a digest rule, click **My account** and then click **New digest rule**.  
-![Digest rules](digest_1.PNG)
+![Digest rules](digest_1.png)
 
 Specify the rule name, select which events should be included in a digest (all options are enabled by default) and configure other options as necessary. The following settings are available:  
-![Digest rule settings](digest_2.PNG)
+![Digest rule settings](digest_2.png)
 
 In the notifications field, the **Send notifications about an event and include it in the digest** value is selected by default. Other options are as follows:  
-![notification settings](digest_2_1.PNG)
+![notification settings](digest_2_1.png)
 
 By default, digests are sent once a week. To set another interval, change the value in the **Recurrence** field.  
-![recurrence settings](digest_2_2.PNG)
+![recurrence settings](digest_2_2.png)
 
 In the **Project** field, you can specify whether the updates of certain projects should be included in the digest or excluded from it:  
-![project settings](digest_2_3.PNG)
+![project settings](digest_2_3.png)
 
 In the **Digest template** field, you can choose between a short or a detailed (grouped either by event type or by event time) digest template:  
-![template settings](digest_2_4.PNG)
+![template settings](digest_2_4.png)
 
 A short digest lists and highlights the project changes:
-![short digest](digest_4.PNG)
+![short digest](digest_4.png)
 
 A detailed digest displays both the changed and new values, shows the time and author of the updates.  
-![detailed digest](digest_5.PNG)  
-![detailed digest](digest_6.PNG)
+![detailed digest](digest_5.png)  
+![detailed digest](digest_6.png)
 
 You can create as many digest rules as needed. You can also preview, edit or delete the created  digest rule on **My account** page.  
-![template settings](digest_3.PNG)
+![template settings](digest_3.png)
 
 ## Maintainers
 
@@ -90,7 +90,7 @@ Danil Tashkinov, [github.com/nodecarter](https://github.com/nodecarter)
 
 ## License
 
-Copyright (c) 2015 Undev
+Copyright (c) 2016 Restream
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

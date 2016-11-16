@@ -1,6 +1,6 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
-  var toggleProjectList = function() {
+  var toggleProjectList = function () {
     var selectedVal = $("#digest_rule_project_selector").val();
     if ($.inArray(selectedVal, ["selected", "not_selected", "member_not_selected"]) < 0) {
       $("#digest-rule-projects").hide();
@@ -18,8 +18,8 @@ $(document).ready(function() {
     width: "40%",
     multiple: true,
     data: $("#digest_rule_raw_project_ids").data("options"),
-    matcher: function(term, text, option) {
-      return text.toUpperCase().indexOf(term.toUpperCase()) >=0;
+    matcher: function (term, text, option) {
+      return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
     }
   });
 

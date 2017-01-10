@@ -57,32 +57,32 @@ Now you should be able to see the plugins in **Administration > Plugins**.
 The plugin enables you to create daily, weekly or monthly digests according to the user-defined rules.
 
 To create a digest rule, click **My account** and then click **New digest rule**.  
-![Digest rules](digest_1.png)
+![Digest rules](doc/digest_1.png)
 
 Specify the rule name, select which events should be included in a digest (all options are enabled by default) and configure other options as necessary. The following settings are available:  
-![Digest rule settings](digest_2.png)
+![Digest rule settings](doc/digest_2.png)
 
 In the notifications field, the **Send notifications about an event and include it in the digest** value is selected by default. Other options are as follows:  
-![notification settings](digest_2_1.png)
+![notification settings](doc/digest_2_1.png)
 
 By default, digests are sent once a week. To set another interval, change the value in the **Recurrence** field.  
-![recurrence settings](digest_2_2.png)
+![recurrence settings](doc/digest_2_2.png)
 
 In the **Project** field, you can specify whether the updates of certain projects should be included in the digest or excluded from it:  
-![project settings](digest_2_3.png)
+![project settings](doc/digest_2_3.png)
 
 In the **Digest template** field, you can choose between a short or a detailed (grouped either by event type or by event time) digest template:  
-![template settings](digest_2_4.png)
+![template settings](doc/digest_2_4.png)
 
 A short digest lists and highlights the project changes:
-![short digest](digest_4.png)
+![short digest](doc/digest_4.png)
 
 A detailed digest displays both the changed and new values, shows the time and author of the updates.  
-![detailed digest](digest_5.png)  
-![detailed digest](digest_6.png)
+![detailed digest](doc/digest_5.png)  
+![detailed digest](doc/digest_6.png)
 
 You can create as many digest rules as needed. You can also preview, edit or delete the created  digest rule on **My account** page.  
-![template settings](digest_3.png)
+![template settings](doc/digest_3.png)
 
 ## Maintainers
 

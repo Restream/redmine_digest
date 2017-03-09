@@ -1,0 +1,67 @@
+# coding: utf-8
+zh:
+  label_digest_rule: "摘要规则设置"
+  label_digest_rules_plural: "摘要规则"
+  label_digest_rule_new: "新建摘要规则"
+  label_digest_rule_edit: "编辑摘要规则"
+
+  new_digest_rule: "新建摘要规则"
+
+  field_project_selector: "项目"
+  field_notify: "通知"
+  field_recurrent: "发生"
+  field_template: "摘要模板"
+
+  text_event_types: "选择摘要中的事件类型"
+  text_digest: "%{recurrent} 更新报告 -- 从 %{time_from} 至 %{time_to}"
+  text_digest_subject: "[%{recurrent} 摘要] %{name}"
+  text_digest_comments: "问题按照最终状态分组"
+  text_notify: "重要提示：这些规则将不会影响您创建或跟踪的问题的通知发送规则"
+  text_new_issues: "新建的问题"
+  text_changed_issues: "更新的问题"
+
+  button_digest_preview: "预览"
+
+  title_digest_preview: "预览"
+
+  project_selector:
+    all: "针对所有项目中的所有问题更新"
+    selected: "只针对所选项目的所有问题更新"
+    not_selected: "针对除了所选项目的所有问题更新"
+    member: "针对所有我是成员的项目的所有问题更新"
+    member_not_selected: "针对所有我是成员的项目的所有问题更新,除了所选项目"
+
+  project_selector_short:
+    all: "所有项目"
+    selected: "只包括所选项目"
+    not_selected: "除了所选项目"
+    member: "所有我是成员的项目"
+    member_not_selected: "所有我是成员的项目,除了所选项目"
+
+  notify_options:
+    all: "针对一个时间发送通知并且将其包含在摘要中"
+    notify: "如果针对一个事件已发送通知则不将其包含在摘要中"
+    digest: "如果一个时间已经包含在摘要中则不针对其发送通知"
+
+  recurrent_types:
+    daily: "一日内"
+    weekly: "一周内"
+    monthly: "一月内"
+
+  event_types:
+    issue_created: "问题已添加"
+    comment_added: "问题备注已添加"
+    attachment_added: "附件已添加"
+    status_changed: "问题状态更新"
+    percent_changed: "完成百分比更新"
+    assignee_changed: "指派人已更新"
+    version_changed: "版本已更新"
+    project_changed: "项目已更新"
+    subject_changed: "主题已变更"
+    other_attr_changed: "其它更新"
+    description_changed: "描述已更新"
+
+  digest_template:
+    short: "概要"
+    detail: "详细 (按照类型分组)"
+    timeline: "详细 (按照时间分组)"

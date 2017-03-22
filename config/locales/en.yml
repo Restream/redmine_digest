@@ -29,6 +29,7 @@ en:
     not_selected: "For any issue update except for the selected projects"
     member: "For any update on all projects I am a member of"
     member_not_selected: "For any update on projects I am a member of, except for the selected projects"
+    all_involved: "For any update to issues I watch or I'm involved in for all projects"
 
   project_selector_short:
     all: "All projects"
@@ -36,6 +37,7 @@ en:
     not_selected: "Except for the selected projects"
     member: "Projects I am a member of"
     member_not_selected: "Projects I am a member of, except for the selected projects"
+    all_involved: "All projects I watch or I'm involved in"
 
   notify_options:
     all: "Send notifications about an event and include it in the digest"

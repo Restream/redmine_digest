@@ -4,7 +4,8 @@ class DigestRule < ActiveRecord::Base
   NOT_SELECTED            = 'not_selected'
   MEMBER                  = 'member'
   MEMBER_NOT_SELECTED     = 'member_not_selected'
-  PROJECT_SELECTOR_VALUES = [ALL, SELECTED, NOT_SELECTED, MEMBER, MEMBER_NOT_SELECTED]
+  ALL_INVOLVED            = 'all_involved'
+  PROJECT_SELECTOR_VALUES = [ALL, SELECTED, NOT_SELECTED, MEMBER, MEMBER_NOT_SELECTED, ALL_INVOLVED]
 
   NOTIFY_AND_DIGEST = 'all'
   NOTIFY_ONLY       = 'notify'
@@ -151,7 +152,7 @@ class DigestRule < ActiveRecord::Base
 
   def get_projects_scope
     case project_selector
-      when ALL
+      when ALL, ALL_INVOLVED
         nil
       when SELECTED
         ['projects.id in (?)', project_ids]

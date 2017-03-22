@@ -172,21 +172,44 @@ module RedmineDigest
     end
 
     def get_changed_issue_ids
-      Journal.joins(:issue).where('issues.project_id in (?)', project_ids).
+      get_journal_scope.
         where('journals.created_on >= ? and journals.created_on < ?', time_from, time_to).
         uniq.pluck(:journalized_id)
     end
 
     def get_created_issue_ids
-      Issue.where('issues.project_id in (?)', project_ids).
-        where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to).
-        uniq.pluck(:id)
+      issues = Issue.where('issues.project_id in (?)', project_ids).
+          where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to)
+      issues.where('(issues.assigned_to_id = ? OR issues.author_id = ?)', user.id, user.id) if all_involved_only?
+      issues.uniq.pluck(:id)
     end
 
     def get_issues_scope(issue_ids)
       Issue.joins(:project).includes(:author, :project, journals: [:user, :details]).
         where('issues.id in (?)', issue_ids).
         where(Issue.visible_condition(user))
+    end
+
+    def get_journal_scope
+      if all_involved_only?
+        get_journal_all_involved_scope
+      else
+        Journal.joins(:issue).where('issues.project_id in (?)', project_ids)
+      end
+    end
+
+    def get_journal_all_involved_scope
+      Journal.joins(:issue).
+          joins("LEFT JOIN journal_details ON journals.id = journal_details.journal_id AND property = 'attr' AND prop_key = 'assigned_to_id'").
+          joins("LEFT JOIN watchers ON watchers.watchable_type='Issue' AND watchers.watchable_id = issues.id").
+          where('watchers.user_id = ? OR issues.author_id = ? OR issues.assigned_to_id = ? OR
+                 journal_details.old_value = ? OR journal_details.value = ? OR journals.user_id = ?',
+                 user.id, user.id, user.id, user.id, user.id, user.id)
+
+    end
+
+    def all_involved_only?
+      project_selector == DigestRule::ALL_INVOLVED
     end
 
     def project_ids

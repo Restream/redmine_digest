@@ -129,6 +129,10 @@ class DigestRule < ActiveRecord::Base
     notify == DIGEST_ONLY
   end
 
+  def all_involved_only?
+    project_selector == ALL_INVOLVED
+  end
+
   private
 
   def event_for_journal_detail(journal, jdetail)

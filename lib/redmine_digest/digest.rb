@@ -5,7 +5,7 @@ module RedmineDigest
 
     attr_reader :digest_rule, :time_to
 
-    delegate :name, :user, :recurrent, :project_selector,
+    delegate :name, :user, :recurrent, :project_selector, :all_involved_only?,
              to: :digest_rule, allow_nil: true
 
     def initialize(digest_rule, time_to = nil, issue_limit = nil)
@@ -206,10 +206,6 @@ module RedmineDigest
                  journal_details.old_value = ? OR journal_details.value = ? OR journals.user_id = ?',
                  user.id, user.id, user.id, user.id, user.id, user.id)
 
-    end
-
-    def all_involved_only?
-      project_selector == DigestRule::ALL_INVOLVED
     end
 
     def project_ids

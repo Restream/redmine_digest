@@ -180,7 +180,7 @@ module RedmineDigest
     def get_created_issue_ids
       issues = Issue.where('issues.project_id in (?)', project_ids).
           where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to)
-      issues.where('(issues.assigned_to_id = ? OR issues.author_id = ?)', user.id, user.id) if all_involved_only?
+      issues = issues.where('(issues.assigned_to_id = ? OR issues.author_id = ?)', user.id, user.id) if all_involved_only?
       issues.uniq.pluck(:id)
     end
 

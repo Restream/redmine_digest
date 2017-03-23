@@ -136,7 +136,7 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
     )
     time_to   = Journal.last.created_on + 1.hour
     digest    = RedmineDigest::Digest.new(rule, time_to)
-    exp_ids   = [1, 2, 4, 6, 7, 8, 11, 12, 14]
+    exp_ids   = [1, 2, 4, 6, 7, 8, 11, 14]
     issue_ids = digest.issues.map(&:id).sort
     assert_equal exp_ids, issue_ids
   end

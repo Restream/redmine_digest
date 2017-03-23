@@ -178,10 +178,14 @@ module RedmineDigest
     end
 
     def get_created_issue_ids
-      issues = Issue.where('issues.project_id in (?)', project_ids).
-          where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to)
-      issues = issues.where('(issues.assigned_to_id = ? OR issues.author_id = ?)', user.id, user.id) if all_involved_only?
-      issues.uniq.pluck(:id)
+      Issue.where('issues.project_id in (?)', project_ids).
+        where('issues.created_on >= ? and issues.created_on < ?', time_from, time_to).
+        where(user_is_involved_in_issues).
+        uniq.pluck(:id)
+    end
+
+    def user_is_involved_in_issues
+      ['issues.assigned_to_id = :user_id OR issues.author_id = :user_id',  {user_id: user.id}] if all_involved_only?
     end
 
     def get_issues_scope(issue_ids)
@@ -202,9 +206,9 @@ module RedmineDigest
       Journal.joins(:issue).
           joins("LEFT JOIN journal_details ON journals.id = journal_details.journal_id AND property = 'attr' AND prop_key = 'assigned_to_id'").
           joins("LEFT JOIN watchers ON watchers.watchable_type='Issue' AND watchers.watchable_id = issues.id").
-          where('watchers.user_id = ? OR issues.author_id = ? OR issues.assigned_to_id = ? OR
-                 journal_details.old_value = ? OR journal_details.value = ? OR journals.user_id = ?',
-                 user.id, user.id, user.id, user.id, user.id, user.id)
+          where('watchers.user_id = :user_id OR issues.author_id = :user_id OR issues.assigned_to_id = :user_id OR
+                 journal_details.old_value = :user_id OR journal_details.value = :user_id OR journals.user_id = :user_id',
+                 {user_id: user.id})
 
     end
 

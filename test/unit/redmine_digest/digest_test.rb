@@ -126,6 +126,21 @@ class RedmineDigest::DigestTest < ActiveSupport::TestCase
     assert_equal exp_ids, issue_ids
   end
 
+  def test_all_involved
+    user      = User.find(2)
+    rule      = user.digest_rules.create(
+        name:             'test',
+        recurrent:        DigestRule::MONTHLY,
+        project_selector: DigestRule::ALL_INVOLVED,
+        event_ids:        DigestEvent::TYPES
+    )
+    time_to   = Journal.last.created_on + 1.hour
+    digest    = RedmineDigest::Digest.new(rule, time_to)
+    exp_ids   = [1, 2, 4, 6, 7, 8, 11, 14]
+    issue_ids = digest.issues.map(&:id).sort
+    assert_equal exp_ids, issue_ids
+  end
+
   def test_time_zone
     Time.use_zone('UTC') do
       # leave only ane issue at midnight UTC

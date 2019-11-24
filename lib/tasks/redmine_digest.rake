@@ -1,5 +1,29 @@
 namespace :redmine_digest do
 
+  desc 'Create digest_rule for all users'
+  task create_digest: [:environment] do
+    puts "#{Time.now} Create digest for all users"
+    count=0
+    #send_digests DigestRule.active.daily
+    User.find_each() do |user|
+      #puts user.inspect
+      puts "rule #{count}"
+      t = DigestRule.new
+      t.user = user
+      t.name = "default_digest_1"
+      t.active =true
+      t.recurrent = DigestRule::DAILY
+      t.project_selector = DigestRule::MEMBER
+      t.event_ids = DigestEvent::TYPES
+      t.notify = DigestRule::DIGEST_ONLY
+      t.template = DigestRule::TEMPLATE_SHORT
+      t.save!
+      # puts t.inspect
+      count=count+1
+    end
+    puts "Created #{count} digest rules"
+  end
+
   desc 'Send daily digests by all active rules'
   task send_daily: [:environment] do
     puts "#{Time.now} Send daily digests."

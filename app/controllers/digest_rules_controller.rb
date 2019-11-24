@@ -18,11 +18,11 @@ class DigestRulesController < ApplicationController
   end
 
   def edit
-    @digest_rule = @user.digest_rules.find(params[:id])
+    @digest_rule = DigestRule.find(params[:id])
   end
 
   def update
-    @digest_rule = @user.digest_rules.find(params[:id])
+    @digest_rule = DigestRule.find(params[:id])
     if @digest_rule.update_attributes(params[:digest_rule])
       redirect_to controller: 'my', action: 'account'
     else
@@ -31,7 +31,7 @@ class DigestRulesController < ApplicationController
   end
 
   def destroy
-    digest_rule = @user.digest_rules.find(params[:id])
+    digest_rule = DigestRule.find(params[:id])
     digest_rule.destroy
     redirect_to controller: 'my', action: 'account'
   end

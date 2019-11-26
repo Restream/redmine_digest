@@ -37,7 +37,8 @@ class DigestRulesController < ApplicationController
   end
 
   def show
-    digest_rule = @user.digest_rules.find(params[:id])
+    #digest_rule = @user.digest_rules.find(params[:id])
+    digest_rule = DigestRule.find(params[:id])
     @digest     = RedmineDigest::Digest.new(digest_rule, Time.now, PREVIEW_ISSUE_LIMIT)
     render layout: 'digest'
   end

@@ -8,17 +8,26 @@ namespace :redmine_digest do
     User.find_each() do |user|
       #puts user.inspect
       puts "rule #{count}"
-      t = DigestRule.new
-      t.user = user
-      t.name = "default_digest_1"
-      t.active =true
-      t.recurrent = DigestRule::DAILY
-      t.project_selector = DigestRule::MEMBER
-      t.event_ids = DigestEvent::TYPES
-      t.notify = DigestRule::DIGEST_ONLY
-      t.template = DigestRule::TEMPLATE_SHORT
-      t.save!
-      # puts t.inspect
+      t = user.digest_rules.create(
+          name:             'test',
+          notify:           DigestRule::DIGEST_ONLY,
+          recurrent:        DigestRule::MONTHLY,
+          project_selector: DigestRule::ALL,
+          event_ids: %w(issue_created project_changed subject_changed assignee_changed status_changed percent_changed version_changed other_attr_changed attachment_added description_changed comment_added),
+          # event_ids: DigestEvent::TYPES
+      )
+
+      # t = DigestRule.new
+      # t.user = user
+      # t.name = "default_digest_1"
+      # t.active =true
+      # t.recurrent = DigestRule::DAILY
+      # t.project_selector = DigestRule::MEMBER
+      # t.event_ids = DigestEvent::TYPES
+      # t.notify = DigestRule::DIGEST_ONLY
+      # t.template = DigestRule::TEMPLATE_SHORT
+      # t.save!
+       puts t.inspect
       count=count+1
     end
     puts "Created #{count} digest rules"
